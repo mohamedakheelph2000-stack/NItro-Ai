@@ -1,37 +1,29 @@
-# Nitro AI - Full AI Platform Requirements
-# =========================================
+# ============================================
+# Nitro AI v5.0 - Production Requirements
+# ============================================
+# This file mirrors backend/requirements.txt for deployment
+# Python 3.10, 3.11, 3.12 compatible
 
-# Core Backend Framework
-fastapi==0.109.0          # Modern web framework
-uvicorn==0.27.0           # ASGI server
-python-dotenv==1.0.0      # Environment variables
-pydantic==2.5.3           # Data validation
+# === CORE WEB FRAMEWORK ===
+fastapi>=0.109.0,<0.112.0
+uvicorn[standard]>=0.27.0,<0.31.0
+pydantic>=2.5.0,<2.10.0
+pydantic-settings>=2.1.0,<2.7.0
 
-# CORS & Security
-python-multipart==0.0.6   # Form data parsing
+# === HTTP & ASYNC ===
+aiohttp>=3.9.0,<3.11.0
+requests>=2.31.0,<2.33.0
 
-# AI & LLM Integration
-aiohttp==3.9.1            # Async HTTP for Ollama/OpenAI APIs
+# === UTILITIES ===
+python-multipart>=0.0.6,<0.0.20
+python-dotenv>=1.0.0,<1.1.0
 
-# Document Generation (Optional - PDF/PPT)
-reportlab==4.0.7          # PDF generation
-python-pptx==0.6.23       # PowerPoint generation
-Pillow==10.1.0            # Image processing
+# === AI & ML ===
+google-generativeai>=0.8.0,<0.9.0
 
-# Web Search & Scraping (Optional)
-requests==2.31.0          # HTTP requests
-beautifulsoup4==4.12.2    # HTML parsing
-lxml==4.9.3               # XML/HTML parser
+# === WEB SCRAPING ===
+beautifulsoup4>=4.12.0,<4.13.0
+lxml>=5.1.0,<5.4.0
 
-# Data Processing
-python-dateutil==2.8.2    # Date handling
-
-# Optional Advanced Features (uncomment if needed):
-# openai==1.6.1           # OpenAI GPT API
-# anthropic==0.8.1        # Claude API
-# google-generativeai     # Gemini API
-# tiktoken==0.5.2         # Token counting for GPT
-
-# Voice AI (Future)
-# SpeechRecognition==3.10.0
-# pyttsx3==2.90
+# === DATA PROCESSING ===
+Pillow>=10.2.0,<11.0.0
