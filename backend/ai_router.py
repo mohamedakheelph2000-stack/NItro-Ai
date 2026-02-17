@@ -10,8 +10,14 @@ Flow:
 Performance optimized for low-compute laptops.
 """
 import requests
-from gemini_client import gemini_response
-from logger import logger
+
+# Import with compatibility for both local and package mode
+try:
+    from .gemini_client import gemini_response
+    from .logger import logger
+except ImportError:
+    from gemini_client import gemini_response
+    from logger import logger
 
 
 def ollama_response(prompt, timeout=30):

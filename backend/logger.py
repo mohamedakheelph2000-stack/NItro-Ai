@@ -4,7 +4,12 @@
 
 import logging
 import sys
-from config import settings
+
+# Import with compatibility for both local and package mode
+try:
+    from .config import settings
+except ImportError:
+    from config import settings
 
 def setup_logger(name: str = "nitro_ai") -> logging.Logger:
     """

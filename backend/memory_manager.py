@@ -11,7 +11,11 @@ from typing import List, Dict, Optional
 from pathlib import Path
 import uuid
 
-from logger import logger
+# Import with compatibility for both local and package mode
+try:
+    from .logger import logger
+except ImportError:
+    from logger import logger
 
 class MemoryManager:
     """

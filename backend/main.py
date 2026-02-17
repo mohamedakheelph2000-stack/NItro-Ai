@@ -7,7 +7,6 @@ AI Integration:
 - Priority: Ollama (local, FREE, private) → Gemini (cloud fallback)
 - Ensures 24/7 availability with zero vendor lock-in
 """
-from ai_router import get_ai_response  # Hybrid AI router: Ollama → Gemini fallback
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -23,24 +22,44 @@ from pathlib import Path
 # Add parent directory to path so we can import models
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import our custom modules
-from config import settings
-from schemas import (
-    ChatMessage, ChatResponse, ErrorResponse, HealthCheckResponse,
-    SessionCreate, SessionResponse, HistoryResponse,
-    LanguageDetectRequest, LanguageDetectResponse, LanguagePreferenceRequest,
-    LanguagePreferenceResponse, SupportedLanguagesResponse,
-    VideoGenerateRequest, VideoGenerateResponse, VideoStatusResponse
-)
-from logger import logger
-from memory_manager import memory_manager
-from language_detector import LanguageDetector
+# Import our custom modules with compatibility for both local and package mode
+try:
+    # Try relative imports first (for package mode: python -m backend.main)
+    from .ai_router import get_ai_response
+    from .config import settings
+    from .schemas import (
+        ChatMessage, ChatResponse, ErrorResponse, HealthCheckResponse,
+        SessionCreate, SessionResponse, HistoryResponse,
+        LanguageDetectRequest, LanguageDetectResponse, LanguagePreferenceRequest,
+        LanguagePreferenceResponse, SupportedLanguagesResponse,
+        VideoGenerateRequest, VideoGenerateResponse, VideoStatusResponse
+    )
+    from .logger import logger
+    from .memory_manager import memory_manager
+    from .language_detector import LanguageDetector
+    from .automation_agents import agent_manager
+except ImportError:
+    # Fallback to absolute imports (for local dev: cd backend && python -m uvicorn main:app)
+    from ai_router import get_ai_response
+    from config import settings
+    from schemas import (
+        ChatMessage, ChatResponse, ErrorResponse, HealthCheckResponse,
+        SessionCreate, SessionResponse, HistoryResponse,
+        LanguageDetectRequest, LanguageDetectResponse, LanguagePreferenceRequest,
+        LanguagePreferenceResponse, SupportedLanguagesResponse,
+        VideoGenerateRequest, VideoGenerateResponse, VideoStatusResponse
+    )
+    from logger import logger
+    from memory_manager import memory_manager
+    from language_detector import LanguageDetector
+    from automation_agents import agent_manager
+
+# These always work from parent directory (models/ is a sibling to backend/)
 from models.ai_modules.video_gen import VideoGenerator
 from models.ai_modules.chat_ai import create_chat_ai
 from models.ai_modules.image_gen_enhanced import create_image_generator
 from models.ai_modules.voice_enhanced import create_voice_assistant
 from models.ai_modules.web_search_enhanced import create_web_search_ai
-from automation_agents import agent_manager  # NEW: Automation framework
 
 # Initialize services
 language_detector = LanguageDetector()
