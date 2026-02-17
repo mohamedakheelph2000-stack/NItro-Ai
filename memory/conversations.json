@@ -1,0 +1,39 @@
+{
+  "sessions": [
+    {
+      "session_id": "9284d877-0731-48e8-b390-3b4175ddef61",
+      "user_id": "test",
+      "created_at": "2026-02-17T20:51:02.432550",
+      "last_updated": "2026-02-17T20:51:04.410436",
+      "messages": [
+        {
+          "timestamp": "2026-02-17T20:51:04.410429",
+          "sender": "user",
+          "message": "Hello! Introduce yourself in one sentence.",
+          "response": "Greetings! I am an advanced language model designed to assist with information processing and generation tasks. How can I help you today?"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "b2d30864-016e-4124-9132-ed142b1c7a50",
+      "user_id": "test",
+      "created_at": "2026-02-17T20:51:12.982606",
+      "last_updated": "2026-02-17T20:51:18.130693",
+      "messages": [
+        {
+          "timestamp": "2026-02-17T20:51:18.130683",
+          "sender": "user",
+          "message": "Hello! Introduce yourself in one sentence.",
+          "response": "I'm delighted to make your acquaintance; as a cutting-edge artificial intelligence, my purpose is to facilitate the flow of knowledge and support human endeavors through intelligent conversation and information retrieval. How may I assist you on this fine day?"
+        }
+      ],
+      "message_count": 1
+    }
+  ],
+  "metadata": {
+    "created": "2026-02-17T19:58:53.784832",
+    "total_messages": 2,
+    "total_sessions": 2
+  }
+}

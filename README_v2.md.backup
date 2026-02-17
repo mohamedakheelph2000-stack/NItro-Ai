@@ -1,0 +1,367 @@
+# 🚀 Nitro AI - Professional AI Assistant Platform
+
+A modern, full-featured AI assistant platform similar to ChatGPT, built with FastAPI and vanilla JavaScript. Optimized for low-compute laptops with a clean, professional interface.
+
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.8+-green)
+![License](https://img.shields.io/badge/license-MIT-orange)
+
+---
+
+## ✨ Features
+
+### Current Features (v2.0.0)
+- ✅ **Professional Chat Interface** - ChatGPT-style UI with history panel
+- ✅ **Conversation Memory** - All chats automatically saved
+- ✅ **Session Management** - Multiple conversation sessions
+- ✅ **Chat History** - Browse and load previous conversations
+- ✅ **Real-time Statistics** - Track messages and sessions
+- ✅ **Responsive Design** - Works on desktop and mobile
+- ✅ **Error Handling** - Graceful error management
+- ✅ **Typing Indicators** - Shows when AI is thinking
+- ✅ **Clean Architecture** - Modular, well-documented code
+- ✅ **Lightweight** - Optimized for low-compute machines
+
+### Coming Soon (Placeholders Ready)
+- 🔜 **AI Model Integration** - OpenAI, Ollama, Claude, Gemini
+- 🔜 **Image Generation** - DALL-E, Stable Diffusion
+- 🔜 **Voice Assistant** - Speech-to-text, Text-to-speech
+- 🔜 **Web Search** - AI-powered search with RAG
+- 🔜 **User Authentication** - Secure login system
+- 🔜 **Database Integration** - PostgreSQL/MySQL support
+
+---
+
+## 📁 Project Structure
+
+```
+Nitro AI/
+├── backend/                    # FastAPI backend server
+│   ├── main.py                # Main server with API endpoints
+│   ├── config.py              # Configuration management
+│   ├── schemas.py             # Data models/validation
+│   ├── logger.py              # Logging system
+│   ├── memory_manager.py      # Conversation storage
+│   ├── requirements.txt       # Python dependencies
+│   ├── .env.example           # Environment variables template
+│   └── README.md              # Backend documentation
+│
+├── frontend/                   # Web interface
+│   ├── index.html             # Main HTML structure
+│   ├── style.css              # Styling (ChatGPT-inspired)
+│   ├── script.js              # JavaScript functionality
+│   └── README.md              # Frontend documentation
+│
+├── models/                     # AI models directory
+│   └── ai_modules/            # AI integration modules
+│       ├── chat_ai.py         # Chat AI interface
+│       ├── image_gen.py       # Image generation
+│       ├── voice.py           # Voice assistant
+│       ├── web_search.py      # Web search & RAG
+│       └── README.md          # AI modules guide
+│
+├── memory/                     # Conversation storage
+│   └── conversations.json     # Chat history (auto-created)
+│
+└── README.md                   # This file
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8 or higher
+- Web browser (Chrome, Firefox, Edge)
+- (Optional) Git for version control
+
+### Step 1: Start the Backend
+
+```powershell
+# Navigate to backend folder
+cd "c:\Nitro AI\backend"
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment (Windows)
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the server
+uvicorn main:app --reload
+```
+
+Backend will start at: **http://localhost:8000**
+
+### Step 2: Open the Frontend
+
+1. Navigate to `c:\Nitro AI\frontend\`
+2. Double-click `index.html`
+3. Start chatting!
+
+Or use Live Server in VS Code for auto-reload.
+
+---
+
+## 📚 Detailed Setup Guides
+
+- **[Backend Setup Guide](backend/SETUP_GUIDE.md)** - Complete backend installation
+- **[Frontend Guide](frontend/README.md)** - Frontend usage instructions
+- **[AI Modules Guide](models/ai_modules/README.md)** - Future AI integration
+
+---
+
+## 🎯 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Welcome message & server info |
+| `/health` | GET | Health check & statistics |
+| `/chat` | POST | Send message, get AI response |
+| `/session/create` | POST | Create new conversation session |
+| `/history/{session_id}` | GET | Get session conversation history |
+| `/sessions/recent` | GET | List recent sessions |
+| `/session/{session_id}` | DELETE | Delete a session |
+| `/stats` | GET | Get platform statistics |
+| `/docs` | GET | Interactive API documentation |
+
+**Full API documentation**: http://localhost:8000/docs (when server is running)
+
+---
+
+## 💡 Usage Examples
+
+### Start a Conversation
+1. Open the frontend
+2. Type your message in the input box
+3. Press Enter or click Send
+4. AI responds (currently dummy responses)
+5. Conversation is automatically saved
+
+### View Chat History
+1. Look at the sidebar (left panel)
+2. See list of recent conversations
+3. Click any session to load it
+4. Continue previous conversations
+
+### Start New Chat
+1. Click "New Chat" button in sidebar
+2. Previous chat is saved
+3. Start fresh conversation
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+# In backend folder
+cp .env.example .env
+```
+
+Key settings:
+```env
+DEBUG_MODE=True
+AI_MODEL=dummy          # Change to 'openai', 'ollama', etc.
+OPENAI_API_KEY=your-key # Add when using OpenAI
+```
+
+See `.env.example` for all available options.
+
+---
+
+## 🤖 Adding AI Models
+
+Currently using dummy responses. To add real AI:
+
+### Option 1: OpenAI (Cloud)
+```env
+# In .env file
+AI_MODEL=openai
+OPENAI_API_KEY=sk-your-key-here
+```
+
+Then uncomment OpenAI code in `models/ai_modules/chat_ai.py`
+
+### Option 2: Ollama (Local - Free!)
+```bash
+# Install Ollama
+# Visit: https://ollama.ai
+
+# Pull a model
+ollama pull llama2
+
+# Configure .env
+AI_MODEL=ollama
+OLLAMA_MODEL=llama2
+```
+
+Then uncomment Ollama code in `chat_ai.py`
+
+**Full guide**: [AI Integration Guide](models/ai_modules/README.md)
+
+---
+
+## 🎨 Customization
+
+### Change Colors
+Edit `frontend/style.css`:
+```css
+/* Line 16 - Main gradient */
+--primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+/* Try different colors! */
+--primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+```
+
+### Change Icons
+Edit `frontend/index.html` and update Font Awesome icon classes.
+
+### Modify AI Behavior
+Edit response generation in `backend/main.py`, line ~145 (when AI is integrated).
+
+---
+
+## 📊 System Requirements
+
+### Minimum
+- **CPU**: Dual-core processor
+- **RAM**: 2GB (4GB recommended)
+- **Storage**: 500MB free space
+- **OS**: Windows, macOS, Linux
+
+### For Local AI Models (Optional)
+- **RAM**: 8GB+ recommended
+- **GPU**: Optional but helpful for larger models
+
+---
+
+## 🐛 Troubleshooting
+
+### Backend won't start
+```powershell
+# Check Python version
+python --version  # Should be 3.8+
+
+# Reinstall dependencies
+pip install -r requirements.txt --upgrade
+
+# Check port 8000 is free
+netstat -ano | findstr :8000
+```
+
+### Frontend shows "Disconnected"
+1. Make sure backend is running (`uvicorn main:app --reload`)
+2. Check backend is on port 8000
+3. Refresh the frontend page
+
+### Chat history not loading
+1. Check `memory/conversations.json` exists
+2. Check file permissions
+3. Look for errors in backend terminal
+
+**More help**: Check individual README files in each folder.
+
+---
+
+## 🛠️ Development
+
+### Backend Development
+```powershell
+cd backend
+venv\Scripts\activate
+uvicorn main:app --reload  # Auto-reloads on code changes
+```
+
+### Frontend Development
+Use Live Server extension in VS Code for auto-reload.
+
+### Run Tests
+```powershell
+cd backend
+python test_api.py  # Tests all API endpoints
+```
+
+---
+
+## 📈 Roadmap
+
+### Phase 1: Foundation ✅ (Complete)
+- [x] Basic chat interface
+- [x] FastAPI backend
+- [x] Conversation memory
+- [x] Session management
+- [x] History panel
+
+### Phase 2: AI Integration 🔄 (In Progress)
+- [ ] OpenAI integration
+- [ ] Ollama local models
+- [ ] Streaming responses
+- [ ] Context awareness
+
+### Phase 3: Advanced Features 📋 (Planned)
+- [ ] Image generation
+- [ ] Voice input/output
+- [ ] Web search integration
+- [ ] RAG (Retrieval-Augmented Generation)
+- [ ] Multi-modal AI
+
+### Phase 4: Production 📋 (Future)
+- [ ] User authentication
+- [ ] Database integration
+- [ ] Cloud deployment
+- [ ] Mobile app
+- [ ] Team collaboration
+
+---
+
+## 🤝 Contributing
+
+This is a learning project! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+- Share improvements
+
+---
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+---
+
+## 🙏 Acknowledgments
+
+- **FastAPI** - Amazing Python web framework
+- **Font Awesome** - Beautiful icons
+- **ChatGPT** - UI/UX inspiration
+- **Ollama** - Local AI made easy
+
+---
+
+## 📞 Support
+
+- **Issues**: Create a GitHub issue
+- **Questions**: Check the documentation
+- **Backend Help**: See [backend/README.md](backend/README.md)
+- **Frontend Help**: See [frontend/README.md](frontend/README.md)
+
+---
+
+## 🌟 Star This Project!
+
+If you find this useful, please give it a star! ⭐
+
+---
+
+**Built with ❤️ for beginners learning AI development**
+
+**Version 2.0.0** | Last Updated: February 17, 2026
+

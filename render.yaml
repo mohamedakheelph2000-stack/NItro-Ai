@@ -1,0 +1,66 @@
+# Render Deployment Configuration for Nitro AI
+# This file tells Render how to deploy your application
+
+services:
+  - type: web
+    name: nitro-ai
+    env: docker
+    dockerfilePath: ./Dockerfile.production
+    plan: free
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Environment variables
+    envVars:
+      # AI Configuration
+      - key: AI_MODEL
+        value: gemini  # Use cloud AI for deployment (Ollama not available on free tier)
+      
+      - key: GEMINI_API_KEY
+        sync: false  # This is a secret, set it in Render dashboard
+      
+      - key: OLLAMA_BASE_URL
+        value: http://localhost:11434
+      
+      - key: OLLAMA_MODEL
+        value: phi3
+      
+      # Server Configuration
+      - key: DEBUG_MODE
+        value: false
+      
+      - key: LOG_LEVEL
+        value: INFO
+      
+      - key: ALLOWED_ORIGINS
+        value: "*"  # Update with your domain after deployment
+      
+      # AI Parameters
+      - key: AI_TEMPERATURE
+        value: "0.7"
+      
+      - key: AI_MAX_TOKENS
+        value: "500"
+      
+      # Feature Flags
+      - key: ENABLE_IMAGE_GEN
+        value: "false"
+      
+      - key: ENABLE_VOICE
+        value: "false"
+      
+      - key: ENABLE_WEB_SEARCH
+        value: "true"
+      
+      - key: ENABLE_AGENTS
+        value: "true"
+      
+      # Optional API Keys (add in dashboard if needed)
+      # - key: HUGGINGFACE_API_KEY
+      #   sync: false
+      # - key: GOOGLE_CLOUD_API_KEY
+      #   sync: false
+
+# Note: After first deployment, update ALLOWED_ORIGINS with your Render URL
+# Example: ALLOWED_ORIGINS=https://nitro-ai.onrender.com,https://www.yourdomain.com

@@ -1,0 +1,64 @@
+# .gitignore - Files and folders to ignore when using Git
+# This prevents sensitive files from being uploaded to GitHub
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables (IMPORTANT!)
+.env
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Future: Model files (when we add AI models)
+models/*.bin
+models/*.pt
+models/*.h5
+models/*.pkl
+
+# Future: Database files
+*.db
+*.sqlite
+*.sqlite3

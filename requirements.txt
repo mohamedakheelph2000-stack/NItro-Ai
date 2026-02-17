@@ -1,0 +1,37 @@
+# Nitro AI - Full AI Platform Requirements
+# =========================================
+
+# Core Backend Framework
+fastapi==0.109.0          # Modern web framework
+uvicorn==0.27.0           # ASGI server
+python-dotenv==1.0.0      # Environment variables
+pydantic==2.5.3           # Data validation
+
+# CORS & Security
+python-multipart==0.0.6   # Form data parsing
+
+# AI & LLM Integration
+aiohttp==3.9.1            # Async HTTP for Ollama/OpenAI APIs
+
+# Document Generation (Optional - PDF/PPT)
+reportlab==4.0.7          # PDF generation
+python-pptx==0.6.23       # PowerPoint generation
+Pillow==10.1.0            # Image processing
+
+# Web Search & Scraping (Optional)
+requests==2.31.0          # HTTP requests
+beautifulsoup4==4.12.2    # HTML parsing
+lxml==4.9.3               # XML/HTML parser
+
+# Data Processing
+python-dateutil==2.8.2    # Date handling
+
+# Optional Advanced Features (uncomment if needed):
+# openai==1.6.1           # OpenAI GPT API
+# anthropic==0.8.1        # Claude API
+# google-generativeai     # Gemini API
+# tiktoken==0.5.2         # Token counting for GPT
+
+# Voice AI (Future)
+# SpeechRecognition==3.10.0
+# pyttsx3==2.90

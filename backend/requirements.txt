@@ -1,0 +1,46 @@
+# ============================================
+# Nitro AI v5.0 - Production Requirements
+# ============================================
+# Optimized for cloud deployment (Render, HuggingFace, Railway, etc.)
+
+# === CORE WEB FRAMEWORK ===
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# === HTTP & API ===
+httpx==0.26.0
+aiohttp==3.9.1
+requests==2.31.0
+
+# === UTILITIES ===
+python-multipart==0.0.6
+python-dotenv==1.0.0
+psutil==5.9.7
+
+# === AI & ML ===
+google-generativeai==0.3.2
+ollama==0.1.6
+
+# === WEB SCRAPING (for search) ===
+beautifulsoup4==4.12.3
+lxml==5.1.0
+
+# === DATA PROCESSING ===
+Pillow==10.2.0
+
+# === OPTIONAL (uncomment if needed) ===
+# Redis for caching
+# redis==5.0.1
+# aioredis==2.0.1
+
+# Rate limiting
+# slowapi==0.1.9
+
+# Monitoring
+# sentry-sdk[fastapi]==1.39.2
+
+# Advanced features
+# openai==1.6.1
+# anthropic==0.8.1

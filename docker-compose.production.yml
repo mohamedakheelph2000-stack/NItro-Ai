@@ -1,0 +1,125 @@
+# Docker Compose - Production Configuration
+# Orchestrates Nitro AI backend with optional services
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # NITRO AI BACKEND
+  # ============================================================================
+  nitro-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: nitro-ai-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Application settings
+      - APP_NAME=Nitro AI
+      - VERSION=5.0
+      - DEBUG_MODE=false
+      - HOST=0.0.0.0
+      - PORT=8000
+      
+      # AI Configuration
+      - AI_MODEL=ollama
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-phi3}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      
+      # Feature flags
+      - ENABLE_IMAGE_GEN=${ENABLE_IMAGE_GEN:-false}
+      - ENABLE_VOICE=${ENABLE_VOICE:-true}
+      - ENABLE_WEB_SEARCH=${ENABLE_WEB_SEARCH:-true}
+      
+      # CORS
+      - ALLOWED_ORIGINS=*
+      
+    volumes:
+      # Persistent data
+      - nitro-memory:/app/memory
+      - nitro-logs:/app/logs
+      - nitro-gallery:/app/gallery
+      
+    networks:
+      - nitro-network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # ============================================================================
+  # NGINX REVERSE PROXY (Optional)
+  # ============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: nitro-ai-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - nitro-frontend:/usr/share/nginx/html:ro
+      - ./ssl:/etc/nginx/ssl:ro  # For HTTPS (optional)
+    depends_on:
+      - nitro-ai
+    networks:
+      - nitro-network
+
+  # ============================================================================
+  # REDIS CACHE (Optional - for performance)
+  # ============================================================================
+  redis:
+    image: redis:alpine
+    container_name: nitro-ai-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - nitro-redis:/data
+    networks:
+      - nitro-network
+    command: redis-server --appendonly yes
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  nitro-memory:
+    driver: local
+  nitro-logs:
+    driver: local
+  nitro-gallery:
+    driver: local
+  nitro-frontend:
+    driver: local
+  nitro-redis:
+    driver: local
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  nitro-network:
+    driver: bridge

@@ -1,0 +1,110 @@
+# Nitro AI - Docker Ignore
+# Optimize Docker build by excluding unnecessary files
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (exclude from production)
+*.md
+!README.md
+docs/
+*.txt
+!requirements.txt
+
+# Test files
+tests/
+test_*.py
+*_test.py
+pytest.ini
+.pytest_cache/
+
+# Development files
+.env.example
+.env.development
+.env.local
+docker-compose.dev.yml
+
+# Build artifacts
+*.pyc
+*.pyo
+*.pyd
+.cache/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Database files (if any)
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Large models (download separately in production)
+models/weights/
+*.pth
+*.ckpt
+*.safetensors
+
+# Memory and session data (regenerate in production)
+memory/*
+!memory/.gitkeep
+
+# Generated files
+gallery/*
+!gallery/.gitkeep
+audio/*
+!audio/.gitkeep
+documents/*
+!documents/.gitkeep
