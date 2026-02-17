@@ -1,8 +1,8 @@
 // Nitro AI - Enhanced Frontend with Multilingual & Video Support
 // ================================================================
 
-// API Configuration
-const API_BASE_URL = 'http://localhost:8000';
+// API Configuration - now loaded from config.js
+// const API_BASE_URL is set in config.js
 
 // State Management
 const state = {
