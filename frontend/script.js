@@ -1126,7 +1126,3 @@ setInterval(() => {
 
 // Check connection every 15 seconds
 setInterval(checkConnection, 15000);
-
-// Load gallery when switching to image tab
-const originalSwitchTab = switchTab;
-switchTab = function(tabName) {
