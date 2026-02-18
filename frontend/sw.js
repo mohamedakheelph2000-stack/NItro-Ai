@@ -1,6 +1,6 @@
 // Service Worker for PWA - Enables offline functionality
 
-const CACHE_NAME = 'nitro-ai-v5.1';  // bumped — forces fresh cache on redeploy
+const CACHE_NAME = 'nitro-ai-v5.2';  // bumped — forces fresh cache on redeploy
 const STATIC_ASSETS = [
     '/',
     '/index.html',

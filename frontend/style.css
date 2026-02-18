@@ -690,6 +690,146 @@ body {
     }
 }
 
+/* ============================================================================
+   TYPING INDICATOR
+   ============================================================================ */
+.typing-indicator {
+    display: flex;
+    gap: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.typing-indicator .message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+}
+
+.typing-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--text-secondary);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+.typing-dots span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40%            { transform: scale(1.0); opacity: 1.0; }
+}
+
+/* ============================================================================
+   WAKE-UP BANNER (Render free tier sleep)
+   ============================================================================ */
+.wakeup-banner {
+    display: none;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    margin: 0.5rem 2rem 0;
+    font-size: 0.875rem;
+    color: var(--warning-color);
+    align-items: center;
+    gap: 0.75rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.wakeup-banner.visible {
+    display: flex;
+}
+
+.wakeup-banner i { flex-shrink: 0; }
+
+.wakeup-progress {
+    flex: 1;
+    height: 4px;
+    background: rgba(245, 158, 11, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-left: 0.5rem;
+}
+
+.wakeup-progress-bar {
+    height: 100%;
+    background: var(--warning-color);
+    border-radius: 2px;
+    width: 0%;
+    animation: wakeupProgress 25s linear forwards;
+}
+
+@keyframes wakeupProgress {
+    from { width: 0%; }
+    to   { width: 100%; }
+}
+
+/* ============================================================================
+   MESSAGE CONTENT — markdown-like rendering
+   ============================================================================ */
+.message-content pre {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.message-content code {
+    font-family: 'Courier New', Consolas, monospace;
+}
+
+.message-content p { margin: 0.25rem 0; }
+
+.user-message .message-content pre {
+    background: rgba(0,0,0,0.2);
+    border-color: rgba(255,255,255,0.15);
+}
+
+/* ============================================================================
+   RETRY BUTTON on error messages
+   ============================================================================ */
+.retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--error-color);
+    border-radius: 6px;
+    color: var(--error-color);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.retry-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
 /* Loading Overlay */
 .loading-overlay {
     position: fixed;
