@@ -1,39 +1,61 @@
 {
   "name": "Nitro AI",
   "short_name": "Nitro AI",
-  "description": "Complete AI platform with chat, image generation, voice assistant, and web search",
+  "description": "Multilingual AI assistant — chat, image generation, voice and web search.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1a1a2e",
-  "theme_color": "#7c3aed",
-  "orientation": "portrait-primary",
+  "background_color": "#0f0f23",
+  "theme_color": "#667eea",
+  "orientation": "any",
+  "lang": "en",
   "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["productivity", "utilities", "ai"],
-  "screenshots": [
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "platform": "mobile"
+      "purpose": "any"
     },
     {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1280x720",
+      "src": "/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "platform": "desktop"
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "short_name": "Chat",
+      "description": "Start a new AI conversation",
+      "url": "/?tab=chat",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Image Generation",
+      "short_name": "Images",
+      "description": "Generate AI images",
+      "url": "/?tab=image",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    }
+  ],
+  "categories": ["productivity", "utilities"]
 }

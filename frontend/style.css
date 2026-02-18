@@ -639,12 +639,25 @@ body {
         left: 0;
         top: 0;
         height: 100vh;
+        height: 100dvh; /* dynamic viewport height on mobile */
         transform: translateX(-100%);
+        z-index: 150;
     }
     
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.4);
     }
+
+    /* Tap outside sidebar to close */
+    .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 140;
+    }
+    .sidebar-backdrop.active { display: block; }
     
     .mobile-menu-btn {
         display: block;
@@ -652,6 +665,12 @@ body {
     
     .header {
         padding-left: 4rem;
+        /* iOS safe area */
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
+
+    .app-container {
+        height: 100dvh;
     }
     
     .chat-container,
@@ -659,6 +678,30 @@ body {
     .video-container {
         padding: 1rem;
     }
+
+    .input-container {
+        padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+
+    /* Larger touch targets on mobile */
+    .tab-btn {
+        min-height: 44px;
+    }
+
+    .send-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Reduce header title on very small screens */
+    .header-title h1 { font-size: 1.2rem; }
+    .subtitle { display: none; }
+}
+
+/* Landscape phone */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header { height: 50px; }
+    .chat-container { padding: 0.5rem 1rem; }
 }
 
 /* ============================================================================
@@ -688,6 +731,32 @@ body {
     to {
         transform: rotate(360deg);
     }
+}
+
+/* ============================================================================
+   OFFLINE BANNER
+   ============================================================================ */
+.offline-banner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #7f1d1d;
+    color: #fca5a5;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.offline-banner.visible {
+    display: flex;
 }
 
 /* ============================================================================

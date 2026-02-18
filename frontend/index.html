@@ -2,11 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nitro AI">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="description" content="Nitro AI — Multilingual AI assistant with chat, image generation, voice, and web search.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nitro AI">
+    <meta property="og:description" content="Your multilingual AI assistant — chat, images, voice, search.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/icon-512.png">
+
     <title>Nitro AI - Your Multilingual AI Assistant</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <!-- API Configuration -->
     <script src="config.js"></script>
 </head>
@@ -98,9 +119,12 @@
         <!-- Main Content Area -->
         <main class="main-content">
             <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
                 <i class="fas fa-bars"></i>
             </button>
+
+            <!-- Sidebar backdrop (tap anywhere to close on mobile) -->
+            <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
             <!-- Header -->
             <header class="header">
@@ -474,6 +498,39 @@
         <span id="toastMessage">Success!</span>
     </div>
 
+    <!-- Offline Banner -->
+    <div class="offline-banner" id="offlineBanner">
+        <i class="fas fa-wifi-slash"></i>
+        <span>You are offline — chat is unavailable until reconnected.</span>
+    </div>
+
     <script src="script.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('[PWA] Service worker registered, scope:', reg.scope))
+            .catch(err => console.warn('[PWA] Service worker registration failed:', err));
+        });
+      }
+
+      // Offline / online detection
+      function updateOnlineStatus() {
+        const banner = document.getElementById('offlineBanner');
+        if (!banner) return;
+        if (!navigator.onLine) {
+          banner.classList.add('visible');
+        } else {
+          banner.classList.remove('visible');
+          // Re-check backend connection when back online
+          if (typeof checkConnection === 'function') checkConnection();
+        }
+      }
+      window.addEventListener('online',  updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      updateOnlineStatus(); // run once on load
+    </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // Service Worker for PWA - Enables offline functionality
 
-const CACHE_NAME = 'nitro-ai-v5.2';  // bumped — forces fresh cache on redeploy
+const CACHE_NAME = 'nitro-ai-v5.3';  // bumped — new icons, offline banner, PWA improvements
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -8,20 +8,29 @@ const STATIC_ASSETS = [
     '/script.js',
     '/config.js',
     '/manifest.json',
+    '/favicon.svg',
+    '/icon-192.png',
+    '/icon-512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
     console.log('[SW] Installing service worker...');
-    
+
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('[SW] Caching static assets');
-                return cache.addAll(STATIC_ASSETS);
-            })
-            .then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then(async (cache) => {
+            console.log('[SW] Caching static assets');
+            // Cache each asset individually so one 3rd-party failure
+            // (e.g. CDN block) does not abort the whole install.
+            await Promise.allSettled(
+                STATIC_ASSETS.map(url =>
+                    cache.add(url).catch(err =>
+                        console.warn('[SW] Could not cache:', url, err.message)
+                    )
+                )
+            );
+        }).then(() => self.skipWaiting())
     );
 });
 
