@@ -254,11 +254,26 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "3b4cddc8-13c1-493e-b512-102e5fdf349d",
+      "user_id": "anonymous",
+      "created_at": "2026-02-19T00:14:52.720383",
+      "last_updated": "2026-02-19T00:15:01.168974",
+      "messages": [
+        {
+          "timestamp": "2026-02-19T00:15:01.168965",
+          "sender": "user",
+          "message": "Hello, test message!",
+          "response": "A test message indeed! It looks like this is the start of a beautiful conversation. How can I assist you today?"
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 17,
-    "total_sessions": 17
+    "total_messages": 18,
+    "total_sessions": 18
   }
 }
