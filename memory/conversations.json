@@ -239,11 +239,26 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "ff02eef3-86b6-40b5-a43e-d0e7e3f49c2d",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:50:01.496745",
+      "last_updated": "2026-02-18T23:50:09.713309",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:50:09.713303",
+          "sender": "user",
+          "message": "What is 2+2? Answer in one word.",
+          "response": "Four."
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 16,
-    "total_sessions": 16
+    "total_messages": 17,
+    "total_sessions": 17
   }
 }
