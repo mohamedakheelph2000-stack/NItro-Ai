@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nitro AI - API Connection Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        h1 {
+            color: #00d4ff;
+            text-align: center;
+        }
+        .test-section {
+            background: #16213e;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        button {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #00aaff;
+        }
+        #results {
+            background: #0f1419;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #00ff88; }
+        .error { color: #ff0066; }
+        .info { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Nitro AI API Connection Test</h1>
+    
+    <div class="test-section">
+        <h2>Backend Configuration</h2>
+        <p><strong>API URL:</strong> <span id="apiUrl">Loading...</span></p>
+        <p><strong>Environment:</strong> <span id="env">Loading...</span></p>
+        <p><strong>Frontend:</strong> <span id="frontend">Loading...</span></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Connection Tests</h2>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <button onclick="testChat()">Test Chat Endpoint</button>
+        <button onclick="testCORS()">Test CORS</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Display configuration
+        document.getElementById('apiUrl').textContent = API_BASE_URL;
+        document.getElementById('env').textContent = window.location.hostname === 'localhost' ? 'Development' : 'Production';
+        document.getElementById('frontend').textContent = window.location.origin;
+        
+        const resultsEl = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            resultsEl.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+        
+        function clearResults() {
+            resultsEl.innerHTML = '';
+        }
+        
+        async function testHealth() {
+            log('Testing /health endpoint...', 'info');
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Health check SUCCESS: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    log(`❌ Health check FAILED: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Health check ERROR: ${error.message}`, 'error');
+                log('Make sure CORS is configured on backend!', 'error');
+            }
+        }
+        
+        async function testChat() {
+            log('Testing /chat endpoint...', 'info');
+            try {
+                const response = await fetch(`${API_BASE_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Hello, this is a test',
+                        user_id: 'test_user',
+                        session_id: null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Chat test SUCCESS`, 'success');
+                    log(`Response: ${data.response}`, 'success');
+                    log(`Session ID: ${data.session_id}`, 'info');
+                } else {
+                    log(`❌ Chat test FAILED: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Chat test ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testCORS() {
+            log('Testing CORS configuration...', 'info');
+            log(`Frontend origin: ${window.location.origin}`, 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                log('✅ CORS test SUCCESS', 'success');
+                log(`CORS Headers: ${JSON.stringify(corsHeaders, null, 2)}`, 'info');
+                
+                if (corsHeaders['Access-Control-Allow-Origin'] === '*' || 
+                    corsHeaders['Access-Control-Allow-Origin'] === window.location.origin) {
+                    log('✅ CORS is properly configured', 'success');
+                } else {
+                    log('⚠️  CORS may need updating for production', 'error');
+                }
+            } catch (error) {
+                log(`❌ CORS test ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-run health check on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('=== Auto-running health check ===', 'info');
+                testHealth();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

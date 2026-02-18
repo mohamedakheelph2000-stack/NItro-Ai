@@ -143,19 +143,31 @@ async function sendMessage() {
     showLoading();
     
     try {
+        // Prepare request data
+        const requestData = {
+            message: message,
+            user_id: state.currentUserId,
+            session_id: state.currentSessionId
+        };
+        
+        // Log API call
+        CONFIG.logApiCall('/chat', 'POST', requestData);
+        
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: message,
-                user_id: state.currentUserId,
-                session_id: state.currentSessionId
-            })
+            body: JSON.stringify(requestData)
         });
         
-        if (!response.ok) throw new Error('Failed to send message');
+        if (!response.ok) {
+            CONFIG.logApiError('/chat', `HTTP ${response.status}: ${response.statusText}`);
+            throw new Error('Failed to send message');
+        }
         
         const data = await response.json();
+        
+        // Log successful response
+        CONFIG.logApiResponse('/chat', response, data);
         
         // Update session if new
         if (!state.currentSessionId && data.session_id) {
@@ -171,6 +183,7 @@ async function sendMessage() {
         
     } catch (error) {
         console.error('Send message error:', error);
+        CONFIG.logApiError('/chat', error);
         showToast('Failed to send message. Please try again.', 'error');
         addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
     } finally {
@@ -485,19 +498,26 @@ function showToast(message, type = 'success') {
 
 async function checkConnection() {
     try {
+        CONFIG.logApiCall('/health', 'GET');
+        
         const response = await fetch(`${API_BASE_URL}/health`);
         const data = await response.json();
+        
+        CONFIG.logApiResponse('/health', response, data);
         
         const statusEl = document.getElementById('connectionStatus');
         if (data.status === 'healthy') {
             statusEl.querySelector('.status-text').textContent = 'Connected';
             statusEl.querySelector('.status-dot').style.background = 'var(--success-color)';
+            console.log('%c✅ Backend Connection: SUCCESS', 'color: #00ff88; font-weight: bold');
         }
     } catch (error) {
         const statusEl = document.getElementById('connectionStatus');
         statusEl.querySelector('.status-text').textContent = 'Disconnected';
         statusEl.querySelector('.status-dot').style.background = 'var(--error-color)';
-        console.error('Connection error:', error);
+        CONFIG.logApiError('/health', error);
+        console.error('%c❌ Backend Connection: FAILED', 'color: #ff0066; font-weight: bold');
+        console.error('Make sure backend is running at:', API_BASE_URL);
     }
 }
 
