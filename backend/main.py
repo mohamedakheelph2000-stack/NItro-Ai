@@ -252,19 +252,16 @@ async def chat(chat_message: ChatMessage, request: Request):
             logger.info(f"Created new session: {session_id}")
         
         # === AI RESPONSE GENERATION ===
-        # Hybrid AI Router System (Optimized for Low-Compute Laptops):
+        # Local AI System (Ollama - 100% Free):
         # 
-        # FLOW:
-        # 1. Try Ollama (LOCAL) - phi3 model, 3.8GB, runs on laptop CPU
-        #    - Benefits: FREE, private, no internet, fast responses
-        #    - Fallback if: Not running, timeout, or error
+        # Uses Ollama for completely free, private AI responses.
+        # No cloud APIs, no tracking, no costs - runs entirely locally.
         # 
-        # 2. Try Gemini (CLOUD) - Google's AI API
-        #    - Benefits: Always available, powerful
-        #    - Requires: GEMINI_API_KEY in .env
-        # 
-        # 3. Final Fallback - Clear error message
-        #    - Tells user exactly what to do
+        # Supported models (install with: ollama pull <model>):
+        # - llama3.2:1b (1.3GB) - Ultra fast, excellent for chat
+        # - phi3 (2.3GB) - Microsoft's efficient model
+        # - mistral (4.1GB) - Very capable, balanced
+        # - llama3:8b (4.7GB) - Meta's latest, highest quality
         
         ai_model_used = "unknown"
         ai_source = "unknown"
@@ -288,17 +285,18 @@ async def chat(chat_message: ChatMessage, request: Request):
             logger.info(f"✅ AI response generated | Model: {ai_model_used} | Source: {ai_source}")
             
         except Exception as ai_error:
-            # Both AI services failed - provide helpful error
-            logger.error(f"❌ AI router failed: {ai_error}")
+            # Ollama not available - provide helpful setup instructions
+            logger.error(f"❌ Ollama unavailable: {ai_error}")
             ai_response = (
-                "🔧 AI services temporarily unavailable.\n\n"
-                "To fix:\n"
-                "1. Start Ollama: Run 'ollama serve' in terminal\n"
-                "2. Or add GEMINI_API_KEY to .env file\n\n"
+                "🤖 Ollama AI is not running.\n\n"
+                "Quick Setup (100% FREE):\n"
+                "1. Install: https://ollama.com/download\n"
+                "2. Pull model: ollama pull llama3.2:1b\n"
+                "3. Start server: ollama serve\n\n"
                 f"Error: {str(ai_error)}"
             )
             ai_model_used = "none"
-            ai_source = "fallback"
+            ai_source = "error"
             
             # Still allow the request to succeed with error message
             # This prevents breaking the frontend

@@ -1,12 +1,12 @@
 {
-  "name": "Nitro AI",
+  "name": "Nitro AI - Free Local AI Assistant",
   "short_name": "Nitro AI",
-  "description": "Multilingual AI assistant — chat, image generation, voice and web search.",
+  "description": "100% Free ChatGPT-style AI assistant powered by Ollama. Private, local, no cloud.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0f0f23",
-  "theme_color": "#667eea",
+  "background_color": "#ffffff",
+  "theme_color": "#10a37f",
   "orientation": "any",
   "lang": "en",
   "icons": [
@@ -46,16 +46,9 @@
       "name": "New Chat",
       "short_name": "Chat",
       "description": "Start a new AI conversation",
-      "url": "/?tab=chat",
-      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
-    },
-    {
-      "name": "Image Generation",
-      "short_name": "Images",
-      "description": "Generate AI images",
-      "url": "/?tab=image",
+      "url": "/",
       "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
     }
   ],
-  "categories": ["productivity", "utilities"]
+  "categories": ["productivity", "utilities", "education"]
 }

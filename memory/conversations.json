@@ -29,11 +29,56 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "770bf8ce-9a46-429f-9fec-1060ebc8303a",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T21:44:15.818534",
+      "last_updated": "2026-02-18T21:44:20.566567",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T21:44:20.566562",
+          "sender": "user",
+          "message": "Hello! Say hi in 5 words or less.",
+          "response": "\"Hi, how do you feel today?\""
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "575ee3ba-2782-4fea-beaa-04f42d6d25f1",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T21:45:17.842454",
+      "last_updated": "2026-02-18T21:45:21.403908",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T21:45:21.403902",
+          "sender": "user",
+          "message": "test",
+          "response": "It seems you'd like to test something. However, your instruction is quite broad and lacks specificity regarding what kind of test we are talking about or the context in which it should be tested. Tests can refer to software programs, scientific experiments, educational assessments, etc. For a more targeted response, please provide additional details such as:\n\n- What exactly needs testing? (Software code snippet?)\n\n- In what field is this test conducted? (Education, science, technology)\n\n- Who or what is being tested and by whom/what entity are the results expected to be analyzed?"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "a6da3818-ade2-4d16-b27d-44ab1016ac56",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:23:11.168796",
+      "last_updated": "2026-02-18T23:23:13.250317",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:23:13.250305",
+          "sender": "user",
+          "message": "Say hello in 5 words or less",
+          "response": "🤖 Ollama AI is not running.\n\nQuick Setup (100% FREE):\n1. Install: https://ollama.com/download\n2. Pull model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nError: Ollama AI is not running. Please:\n\n1. Install Ollama: https://ollama.com/download\n2. Pull a model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nOllama is 100% free and runs locally on your device!"
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 2,
-    "total_sessions": 2
+    "total_messages": 5,
+    "total_sessions": 5
   }
 }

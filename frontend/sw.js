@@ -1,6 +1,6 @@
 // Service Worker for PWA - Enables offline functionality
 
-const CACHE_NAME = 'nitro-ai-v5.4';  // bumped — updated backend URL for new Render deployment
+const CACHE_NAME = 'nitro-ai-v6.0';  // NEW - Clean ChatGPT-style redesign, 100% free Ollama-only
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -10,8 +10,7 @@ const STATIC_ASSETS = [
     '/manifest.json',
     '/favicon.svg',
     '/icon-192.png',
-    '/icon-512.png',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+    '/icon-512.png'
 ];
 
 // Install event - cache static assets

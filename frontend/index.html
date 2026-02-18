@@ -3,534 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- PWA Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Nitro AI">
-    <meta name="theme-color" content="#7c3aed">
-    <meta name="description" content="Nitro AI — Multilingual AI assistant with chat, image generation, voice, and web search.">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Nitro AI">
-    <meta property="og:description" content="Your multilingual AI assistant — chat, images, voice, search.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="/icon-512.png">
-
-    <title>Nitro AI - Your Multilingual AI Assistant</title>
-
-    <!-- Favicon -->
+    <meta name="theme-color" content="#10a37f">
+    <meta name="description" content="Nitro AI - Free ChatGPT-style AI Assistant powered by Ollama">
+    
+    <title>Nitro AI</title>
+    
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/icon-192.png">
-
-    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
-    <!-- API Configuration -->
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style_new.css">
+    
+    <!-- Config -->
     <script src="config.js"></script>
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="app-container">
-        
+    <div class="app">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <button class="new-chat-btn" onclick="startNewChat()">
-                    <i class="fas fa-plus"></i>
-                    <span>New Chat</span>
+                <button class="new-chat-btn" onclick="newChat()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    New chat
+                </button>
+                <button class="sidebar-toggle-mobile" onclick="toggleSidebar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
                 </button>
             </div>
-
-            <!-- Language Selector -->
-            <div class="language-selector-container">
-                <label for="languageSelect" class="language-label">
-                    <i class="fas fa-globe"></i>
-                    <span>Language</span>
-                </label>
-                <select id="languageSelect" class="language-select" onchange="changeLanguage()">
-                    <option value="auto">🌐 Auto-Detect</option>
-                    <option value="en">🇬🇧 English</option>
-                    <option value="es">🇪🇸 Spanish</option>
-                    <option value="fr">🇫🇷 French</option>
-                    <option value="de">🇩🇪 German</option>
-                    <option value="zh">🇨🇳 Chinese</option>
-                    <option value="ja">🇯🇵 Japanese</option>
-                    <option value="ar">🇸🇦 Arabic</option>
-                    <option value="pt">🇵🇹 Portuguese</option>
-                    <option value="ru">🇷🇺 Russian</option>
-                    <option value="it">🇮🇹 Italian</option>
-                </select>
+            
+            <div class="chat-history" id="chatHistory">
+                <!-- Chat history items loaded here -->
             </div>
-
-            <!-- Tab Navigation -->
-            <div class="tab-navigation">
-                <button class="tab-btn active" onclick="switchTab('chat')" data-tab="chat">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('image')" data-tab="image">
-                    <i class="fas fa-image"></i>
-                    <span>Images</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('voice')" data-tab="voice">
-                    <i class="fas fa-microphone"></i>
-                    <span>Voice</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('search')" data-tab="search">
-                    <i class="fas fa-magnifying-glass"></i>
-                    <span>Search</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('video')" data-tab="video">
-                    <i class="fas fa-video"></i>
-                    <span>Video</span>
-                </button>
-            </div>
-
-            <!-- Chat Sessions List -->
-            <div class="sessions-container" id="sessionsContainer">
-                <div class="sessions-header">
-                    <h3>Recent Conversations</h3>
-                </div>
-                <div class="sessions-list" id="sessionsList">
-                    <!-- Sessions will be loaded here by JavaScript -->
-                    <div class="session-item-placeholder">
-                        <p>No conversations yet</p>
-                        <p class="small-text">Start chatting to see your history</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Statistics -->
+            
             <div class="sidebar-footer">
-                <div class="stat-item">
-                    <i class="fas fa-comment-dots"></i>
-                    <span id="totalSessions">0 sessions</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-message"></i>
-                    <span id="totalMessages">0 messages</span>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="moon-icon" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <div class="model-info">
+                    <span class="model-badge" id="modelBadge">llama3.2:1b</span>
                 </div>
             </div>
         </aside>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Sidebar backdrop (tap anywhere to close on mobile) -->
-            <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
-
+        
+        <!-- Main Content -->
+        <main class="main">
             <!-- Header -->
             <header class="header">
-                <div class="header-title">
-                    <h1><i class="fas fa-robot"></i> Nitro AI</h1>
-                    <p class="subtitle">Multilingual AI Assistant with Video Generation</p>
-                </div>
-                <div class="connection-status" id="connectionStatus">
-                    <span class="status-dot"></span>
-                    <span class="status-text">Connected</span>
-                </div>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+                <h1 class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    </svg>
+                    Nitro AI
+                </h1>
+                <div class="header-spacer"></div>
             </header>
-
-            <!-- Wake-up banner (shown when backend is waking from Render free-tier sleep) -->
-            <div class="wakeup-banner" id="wakeupBanner">
-                <i class="fas fa-coffee"></i>
-                <span id="wakeupText">Backend is waking up, please wait a moment…</span>
-                <div class="wakeup-progress"><div class="wakeup-progress-bar" id="wakeupBar"></div></div>
-            </div>
-
-            <!-- Tab Contents -->
-            <div class="tab-content active" id="chatTab">
-                <!-- Chat Messages Area -->
-                <div class="chat-container" id="chatContainer">
-                    <!-- Welcome Message -->
-                    <div class="message assistant-message">
-                        <div class="message-avatar">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="message-content">
-                            <p><strong>Welcome to Nitro AI!</strong></p>
-                            <p>I can help you in multiple languages. Just start typing in your preferred language, and I'll automatically detect it!</p>
-                            <p class="small-text">🌐 Currently supporting 10 languages</p>
-                        </div>
+            
+            <!-- Chat Container -->
+            <div class="chat-container" id="chatContainer">
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                        </svg>
+                    </div>
+                    <h2>How can I help you today?</h2>
+                    <p class="subtitle">100% Free • Private • Local AI</p>
+                    <div class="suggestions">
+                        <button class="suggestion-btn" onclick="sendSuggestion('Explain quantum computing in simple terms')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/>
+                            </svg>
+                            Explain quantum computing
+                        </button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('Write a Python function to sort a list')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                            </svg>
+                            Write a Python function
+                        </button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('What are the health benefits of green tea?')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                            Health benefits of green tea
+                        </button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('Help me plan a 7-day trip to Japan')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Plan a trip to Japan
+                        </button>
                     </div>
                 </div>
-
-                <!-- Input Container -->
-                <div class="input-container">
-                    <div class="session-info" id="sessionInfo">
-                        <i class="fas fa-circle-dot"></i>
-                        <span id="currentSessionText">New Session</span>
-                        <span class="language-indicator" id="languageIndicator">
-                            <i class="fas fa-language"></i>
-                            <span id="detectedLanguage">English</span>
-                        </span>
-                    </div>
-                    <div class="input-wrapper">
-                        <textarea 
-                            id="messageInput" 
-                            placeholder="Type your message in any language..."
-                            rows="1"
-                            maxlength="1000"
-                        ></textarea>
-                        <div class="input-actions">
-                            <span class="char-counter" id="charCounter">0/1000</span>
-                            <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
+                
+                <!-- Messages -->
+                <div class="messages" id="messages">
+                    <!-- Messages appear here -->
                 </div>
             </div>
-
-            <!-- Image Generation Tab -->
-            <div class="tab-content" id="imageTab">
-                <div class="image-container">
-                    <div class="image-header">
-                        <h2><i class="fas fa-image"></i> AI Image Generation</h2>
-                        <p class="subtitle">Create stunning images from text descriptions using Stable Diffusion</p>
-                    </div>
-
-                    <div class="image-generator">
-                        <div class="image-input-section">
-                            <label for="imagePrompt">
-                                <i class="fas fa-wand-magic-sparkles"></i> Describe Your Image
-                            </label>
-                            <textarea 
-                                id="imagePrompt" 
-                                placeholder="Example: A majestic dragon flying over a medieval castle at sunset, fantasy art, detailed..."
-                                rows="3"
-                                maxlength="1000"
-                            ></textarea>
-
-                            <label for="imageNegativePrompt">
-                                <i class="fas fa-ban"></i> Negative Prompt (Optional)
-                            </label>
-                            <textarea 
-                                id="imageNegativePrompt" 
-                                placeholder="What to avoid: blurry, low quality, distorted, ugly..."
-                                rows="2"
-                                maxlength="500"
-                            ></textarea>
-
-                            <div class="image-options">
-                                <div class="option-group">
-                                    <label for="imageSize">
-                                        <i class="fas fa-expand"></i> Size
-                                    </label>
-                                    <select id="imageSize">
-                                        <option value="512x512" selected>Square (512x512)</option>
-                                        <option value="768x768">Square HD (768x768)</option>
-                                        <option value="1024x1024">Square XL (1024x1024)</option>
-                                        <option value="512x768">Portrait</option>
-                                        <option value="768x512">Landscape</option>
-                                    </select>
-                                </div>
-
-                                <div class="option-group">
-                                    <label for="imageQuality">
-                                        <i class="fas fa-star"></i> Quality
-                                    </label>
-                                    <select id="imageQuality">
-                                        <option value="standard" selected>Standard (Fast)</option>
-                                        <option value="hd">HD (Better Quality)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button class="generate-image-btn" onclick="generateImage()" id="generateImageBtn">
-                                <i class="fas fa-image"></i> Generate Image
-                            </button>
-
-                            <div class="info-box">
-                                <i class="fas fa-info-circle"></i>
-                                <div>
-                                    <strong>FREE Local Generation!</strong>
-                                    <p>Install Stable Diffusion for free local image generation:</p>
-                                    <code>pip install diffusers torch transformers pillow</code>
-                                    <p class="small-text">💡 Runs on CPU (laptop-friendly) | ~4GB model download</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="image-output-section">
-                            <h3>Generated Images</h3>
-                            <div class="image-gallery" id="imageGallery">
-                                <div class="empty-state">
-                                    <i class="fas fa-images"></i>
-                                    <p>No images generated yet</p>
-                                    <p class="small-text">Your generated images will appear here</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="Message Nitro AI..." 
+                        rows="1"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-
-            <!-- Voice Assistant Tab -->
-            <div class="tab-content" id="voiceTab">
-                <div class="voice-container">
-                    <div class="voice-header">
-                        <h2><i class="fas fa-microphone"></i> Voice Assistant</h2>
-                        <p class="subtitle">Talk to Nitro AI using your voice</p>
-                    </div>
-
-                    <div class="voice-interface">
-                        <div class="voice-controls">
-                            <button class="voice-btn" id="voiceBtn" onclick="startVoiceRecording()">
-                                <i class="fas fa-microphone" id="voiceIcon"></i>
-                                <span id="voiceText">Start Recording</span>
-                            </button>
-                            <div class="voice-status" id="voiceStatus">
-                                <span class="status-indicator"></span>
-                                <span id="voiceStatusText">Ready</span>
-                            </div>
-                        </div>
-
-                        <div class="voice-transcript">
-                            <h3><i class="fas fa-comment-dots"></i> Transcript</h3>
-                            <div class="transcript-box" id="transcriptBox">
-                                <p class="placeholder-text">Your speech will appear here...</p>
-                            </div>
-                        </div>
-
-                        <div class="voice-response">
-                            <h3><i class="fas fa-robot"></i> AI Response</h3>
-                            <div class="response-box" id="voiceResponseBox">
-                                <p class="placeholder-text">AI response will appear here...</p>
-                            </div>
-                            <button class="play-audio-btn" id="playAudioBtn" onclick="playAudioResponse()" style="display: none;">
-                                <i class="fas fa-volume-up"></i> Play Audio Response
-                            </button>
-                        </div>
-
-                        <div class="voice-settings">
-                            <div class="option-group">
-                                <label for="voiceLanguage">
-                                    <i class="fas fa-language"></i> Voice Language
-                                </label>
-                                <select id="voiceLanguage">
-                                    <option value="en" selected>English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                    <option value="de">German</option>
-                                    <option value="zh">Chinese</option>
-                                    <option value="ja">Japanese</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="info-box">
-                            <i class="fas fa-info-circle"></i>
-                            <div>
-                                <strong>FREE Voice Features!</strong>
-                                <p>Install voice libraries:</p>
-                                <code>pip install SpeechRecognition gTTS pyttsx3</code>
-                                <p class="small-text">💡 Uses free Google Web Speech API | Works on any laptop</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Web Search Tab -->
-            <div class="tab-content" id="searchTab">
-                <div class="search-container">
-                    <div class="search-header">
-                        <h2><i class="fas fa-magnifying-glass"></i> AI Web Search</h2>
-                        <p class="subtitle">Search the web and get AI-powered summaries with sources</p>
-                    </div>
-
-                    <div class="search-interface">
-                        <div class="search-input-section">
-                            <div class="search-box">
-                                <i class="fas fa-magnifying-glass"></i>
-                                <input 
-                                    type="text" 
-                                    id="searchInput" 
-                                    placeholder="Ask anything... (e.g., What's the latest in AI technology?)"
-                                    maxlength="500"
-                                />
-                                <button class="search-btn" onclick="performWebSearch()" id="searchBtn">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-
-                            <div class="search-options">
-                                <label>
-                                    <input type="checkbox" id="summarizeResults" checked>
-                                    <span>AI-Powered Summary</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="search-results" id="searchResults">
-                            <div class="empty-state">
-                                <i class="fas fa-magnifying-glass-chart"></i>
-                                <p>Ready to search the web</p>
-                                <p class="small-text">Enter your query above and get AI-powered answers with sources</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="info-box">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>Perplexity-Style Search!</strong>
-                            <p>✅ Searches DuckDuckGo (no API key needed)<br>
-                               ✅ AI-powered summaries with citations<br>
-                               ✅ Source links for verification<br>
-                               ✅ Completely FREE to use</p>
-                            <p class="small-text">💡 Powered by your hybrid AI router (Ollama + Gemini)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Video Generation Tab -->
-            <div class="tab-content" id="videoTab">
-                <div class="video-container">
-                    <div class="video-header">
-                        <h2><i class="fas fa-video"></i> Video Generation</h2>
-                        <p class="subtitle">Create AI-generated videos from text descriptions</p>
-                        <div class="feature-badge">
-                            <i class="fas fa-flask"></i> PLACEHOLDER - Coming Soon!
-                        </div>
-                    </div>
-
-                    <div class="video-generator">
-                        <div class="video-input-section">
-                            <label for="videoPrompt">
-                                <i class="fas fa-wand-magic-sparkles"></i> Describe Your Video
-                            </label>
-                            <textarea 
-                                id="videoPrompt" 
-                                placeholder="Example: A serene sunset over the ocean with gentle waves, cinematic lighting..."
-                                rows="4"
-                                maxlength="1000"
-                            ></textarea>
-
-                            <div class="video-options">
-                                <div class="option-group">
-                                    <label for="videoStyle">
-                                        <i class="fas fa-palette"></i> Style
-                                    </label>
-                                    <select id="videoStyle">
-                                        <option value="realistic">Realistic</option>
-                                        <option value="cinematic" selected>Cinematic</option>
-                                        <option value="anime">Anime</option>
-                                        <option value="cartoon">Cartoon</option>
-                                        <option value="abstract">Abstract</option>
-                                        <option value="documentary">Documentary</option>
-                                    </select>
-                                </div>
-
-                                <div class="option-group">
-                                    <label for="videoDuration">
-                                        <i class="fas fa-clock"></i> Duration (seconds)
-                                    </label>
-                                    <input type="number" id="videoDuration" value="4" min="2" max="16">
-                                </div>
-
-                                <div class="option-group">
-                                    <label for="videoResolution">
-                                        <i class="fas fa-expand"></i> Resolution
-                                    </label>
-                                    <select id="videoResolution">
-                                        <option value="512x512">SD (512x512)</option>
-                                        <option value="1280x720" selected>HD (1280x720)</option>
-                                        <option value="1920x1080">Full HD (1920x1080)</option>
-                                        <option value="3840x2160">4K (3840x2160)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button class="generate-video-btn" onclick="generateVideo()">
-                                <i class="fas fa-video"></i> Generate Video
-                            </button>
-
-                            <div class="video-info-box">
-                                <i class="fas fa-info-circle"></i>
-                                <div>
-                                    <strong>Implementation Status:</strong>
-                                    <p>Video generation is a placeholder feature. To enable:</p>
-                                    <ul>
-                                        <li>Add API key for RunwayML/Stable Diffusion to .env</li>
-                                        <li>Uncomment code in models/ai_modules/video_gen.py</li>
-                                        <li>See documentation for full setup guide</li>
-                                    </ul>
-                                    <p class="small-text">💡 Estimated cost: $0.05-0.10 per 4-second video</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="video-output-section">
-                            <h3>Recent Videos</h3>
-                            <div class="video-gallery" id="videoGallery">
-                                <div class="empty-state">
-                                    <i class="fas fa-film"></i>
-                                    <p>No videos generated yet</p>
-                                    <p class="small-text">Your generated videos will appear here</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p class="input-hint">Nitro AI can make mistakes. Powered by free local Ollama.</p>
             </div>
         </main>
     </div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <p>Processing...</p>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Success!</span>
-    </div>
-
-    <!-- Offline Banner -->
-    <div class="offline-banner" id="offlineBanner">
-        <i class="fas fa-wifi-slash"></i>
-        <span>You are offline — chat is unavailable until reconnected.</span>
-    </div>
-
-    <script src="script.js"></script>
-
+    
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Scripts -->
+    <script src="script_new.js"></script>
+    
     <!-- Service Worker Registration -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('[PWA] Service worker registered, scope:', reg.scope))
-            .catch(err => console.warn('[PWA] Service worker registration failed:', err));
-        });
-      }
-
-      // Offline / online detection
-      function updateOnlineStatus() {
-        const banner = document.getElementById('offlineBanner');
-        if (!banner) return;
-        if (!navigator.onLine) {
-          banner.classList.add('visible');
-        } else {
-          banner.classList.remove('visible');
-          // Re-check backend connection when back online
-          if (typeof checkConnection === 'function') checkConnection();
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registered'))
+                    .catch(err => console.log('❌ SW registration failed:', err));
+            });
         }
-      }
-      window.addEventListener('online',  updateOnlineStatus);
-      window.addEventListener('offline', updateOnlineStatus);
-      updateOnlineStatus(); // run once on load
     </script>
 </body>
 </html>
