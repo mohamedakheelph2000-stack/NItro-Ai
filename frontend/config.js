@@ -4,22 +4,22 @@
 // This file configures the backend API endpoint based on environment
 
 const CONFIG = {
-    // Production Backend API URL (deployed on Render)
-    API_BASE_URL: 'https://nitro-ai-rjab.onrender.com',
+    // Local Backend API URL (runs on your laptop)
+    API_BASE_URL: 'http://localhost:8000',
     
-    // Development Backend API URL (local development)
-    DEV_API_URL: 'http://localhost:8000',
+    // Network-accessible URL (for mobile/tablet access)
+    // Change this to your laptop's IP if using Cloudflare tunnel
+    NETWORK_API_URL: 'http://localhost:8000',
     
     // Auto-detect environment and return appropriate API URL
     getApiUrl: function() {
-        const hostname = window.location.hostname;
-        const isDev = hostname === 'localhost' || hostname === '127.0.0.1';
+        // Always use local backend for laptop server mode
+        const apiUrl = this.API_BASE_URL;
         
-        const apiUrl = isDev ? this.DEV_API_URL : this.API_BASE_URL;
-        
-        console.log(`%c🌐 Environment: ${isDev ? 'DEVELOPMENT' : 'PRODUCTION'}`, 'color: #00d4ff; font-weight: bold');
+        console.log(`%c🌐 Environment: LOCAL LAPTOP SERVER`, 'color: #00d4ff; font-weight: bold');
         console.log(`%c🔗 API URL: ${apiUrl}`, 'color: #00ff88; font-weight: bold');
         console.log(`%c📍 Frontend: ${window.location.origin}`, 'color: #ffaa00; font-weight: bold');
+        console.log(`%c💻 Backend: Ollama on your laptop`, 'color: #9d4edd; font-weight: bold');
         
         return apiUrl;
     },

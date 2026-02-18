@@ -1,21 +1,29 @@
+# ==============================================================================
+# CLOUD DEPLOYMENT CONFIGURATION (OPTIONAL - NOT NEEDED FOR LOCAL LAPTOP MODE)
+# ==============================================================================
+# NOTE: Ollama requires local GPU/RAM and cannot run on free cloud platforms.
+# This file is kept for reference only. For laptop server mode, ignore this file.
+# ==============================================================================
+
 # Render Deployment Configuration for Nitro AI
 # This file tells Render how to deploy your application
 
-services:
-  - type: web
-    name: nitro-ai
-    env: docker
-    dockerfilePath: ./Dockerfile.production
-    plan: free
-    
-    # Health check configuration
-    healthCheckPath: /health
-    
-    # Environment variables
-    envVars:
-      # AI Configuration
-      - key: AI_MODEL
-        value: gemini  # Use cloud AI for deployment (Ollama not available on free tier)
+# DISABLED - Ollama requires local resources
+# services:
+#   - type: web
+#     name: nitro-ai
+#     env: docker
+#     dockerfilePath: ./Dockerfile.production
+#     plan: free
+#     
+#     # Health check configuration
+#     healthCheckPath: /health
+#     
+#     # Environment variables
+#     envVars:
+#       # AI Configuration
+#       - key: AI_MODEL
+#         value: gemini  # Use cloud AI for deployment (Ollama not available on free tier)
       
       - key: GEMINI_API_KEY
         sync: false  # This is a secret, set it in Render dashboard

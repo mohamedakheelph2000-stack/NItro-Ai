@@ -74,11 +74,101 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "a0c2f57a-b3f7-4e53-94ce-532fe2078890",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:24:29.871107",
+      "last_updated": "2026-02-18T23:24:31.944966",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:24:31.944955",
+          "sender": "user",
+          "message": "Hello! Reply in 5 words.",
+          "response": "🤖 Ollama AI is not running.\n\nQuick Setup (100% FREE):\n1. Install: https://ollama.com/download\n2. Pull model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nError: Ollama AI is not running. Please:\n\n1. Install Ollama: https://ollama.com/download\n2. Pull a model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nOllama is 100% free and runs locally on your device!"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "98ad02a5-6e31-4ee6-8e23-7ab8298a12ab",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:26:02.780767",
+      "last_updated": "2026-02-18T23:26:04.847223",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:26:04.847217",
+          "sender": "user",
+          "message": "Say hi in 3 words",
+          "response": "🤖 Ollama AI is not running.\n\nQuick Setup (100% FREE):\n1. Install: https://ollama.com/download\n2. Pull model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nError: Ollama AI is not running. Please:\n\n1. Install Ollama: https://ollama.com/download\n2. Pull a model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nOllama is 100% free and runs locally on your device!"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "4fe1bfe6-7319-4f1a-832a-daeed3601cff",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:34:44.896405",
+      "last_updated": "2026-02-18T23:34:46.942899",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:34:46.942893",
+          "sender": "user",
+          "message": "Hello! Say hi in 3 words.",
+          "response": "🤖 Ollama AI is not running.\n\nQuick Setup (100% FREE):\n1. Install: https://ollama.com/download\n2. Pull model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nError: Ollama AI is not running. Please:\n\n1. Install Ollama: https://ollama.com/download\n2. Pull a model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nOllama is 100% free and runs locally on your device!"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "1fddae83-d1ba-4ec0-b0b8-750e918cddd6",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:35:04.104675",
+      "last_updated": "2026-02-18T23:35:06.162203",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:35:06.162197",
+          "sender": "user",
+          "message": "Test",
+          "response": "🤖 Ollama AI is not running.\n\nQuick Setup (100% FREE):\n1. Install: https://ollama.com/download\n2. Pull model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nError: Ollama AI is not running. Please:\n\n1. Install Ollama: https://ollama.com/download\n2. Pull a model: ollama pull llama3.2:1b\n3. Start server: ollama serve\n\nOllama is 100% free and runs locally on your device!"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "27cfb0e4-3078-4712-879b-4cab8cf162c9",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:38:25.366080",
+      "last_updated": "2026-02-18T23:38:38.828113",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:38:38.828104",
+          "sender": "user",
+          "message": "Test hi in 2 words",
+          "response": "Hi there! How can I help you today?"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "743c91a3-804b-4b54-bdfe-597d4159fd50",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:39:05.940879",
+      "last_updated": "2026-02-18T23:39:13.079370",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:39:13.079363",
+          "sender": "user",
+          "message": "Hello, say hi",
+          "response": "Hi there! How can I help you today?"
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 5,
-    "total_sessions": 5
+    "total_messages": 11,
+    "total_sessions": 11
   }
 }
