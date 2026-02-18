@@ -61,9 +61,8 @@ self.addEventListener('fetch', (event) => {
     }
     
     // Handle API requests differently (network-first)
-    // Check for backend API calls (nitro-ai-rjab.onrender.com or localhost:8000)
+    // Check for backend API calls (localhost:8000)
     const isApiRequest = request.url.includes('/api/') || 
-                        request.url.includes('nitro-ai-rjab.onrender.com') ||
                         request.url.includes('localhost:8000');
     
     if (isApiRequest) {

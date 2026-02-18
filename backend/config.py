@@ -22,30 +22,29 @@ class Settings:
     PORT: int = int(os.getenv("PORT", "8000"))  # Dynamic port for cloud platforms
     
     # === CORS SETTINGS ===
-    # Allowed origins loaded from ALLOWED_ORIGINS env var (comma-separated)
-    # Default includes common Netlify patterns + localhost for dev
+    # Allowed origins for local development only
     _default_origins = (
-        "https://nitro-ai.netlify.app,"
-        "https://*.netlify.app,"
         "http://localhost:5173,"
         "http://localhost:3000,"
         "http://localhost:8080,"
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173,"
+        "http://127.0.0.1:3000,"
+        "http://127.0.0.1:8080"
     )
     _allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", _default_origins)
 
     @classmethod
     def _build_origins(cls) -> list:
-        """Parse ALLOWED_ORIGINS and always include localhost for dev."""
+        """Parse ALLOWED_ORIGINS - localhost only for local deployment."""
         raw = os.getenv(
             "ALLOWED_ORIGINS",
             (
-                "https://nitro-ai.netlify.app,"
-                "https://*.netlify.app,"
                 "http://localhost:5173,"
                 "http://localhost:3000,"
                 "http://localhost:8080,"
-                "http://127.0.0.1:5173"
+                "http://127.0.0.1:5173,"
+                "http://127.0.0.1:3000,"
+                "http://127.0.0.1:8080"
             ),
         )
         origins = [o.strip() for o in raw.split(",") if o.strip()]
