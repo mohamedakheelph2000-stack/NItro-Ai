@@ -22,11 +22,45 @@ class Settings:
     PORT: int = int(os.getenv("PORT", "8000"))  # Dynamic port for cloud platforms
     
     # === CORS SETTINGS ===
-    # Which websites can talk to our backend
-    # Supports both wildcard for development and specific origins for production
-    _allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
-    ALLOWED_ORIGINS: list = _allowed_origins.split(",") if "," in _allowed_origins else [_allowed_origins]
-    
+    # Allowed origins loaded from ALLOWED_ORIGINS env var (comma-separated)
+    # Default includes common Netlify patterns + localhost for dev
+    _default_origins = (
+        "https://nitro-ai.netlify.app,"
+        "https://*.netlify.app,"
+        "http://localhost:5173,"
+        "http://localhost:3000,"
+        "http://localhost:8080,"
+        "http://127.0.0.1:5173"
+    )
+    _allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", _default_origins)
+
+    @classmethod
+    def _build_origins(cls) -> list:
+        """Parse ALLOWED_ORIGINS and always include localhost for dev."""
+        raw = os.getenv(
+            "ALLOWED_ORIGINS",
+            (
+                "https://nitro-ai.netlify.app,"
+                "https://*.netlify.app,"
+                "http://localhost:5173,"
+                "http://localhost:3000,"
+                "http://localhost:8080,"
+                "http://127.0.0.1:5173"
+            ),
+        )
+        origins = [o.strip() for o in raw.split(",") if o.strip()]
+        # Always allow localhost for local development
+        dev_origins = [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://localhost:8080",
+            "http://127.0.0.1:5173",
+        ]
+        for dev in dev_origins:
+            if dev not in origins:
+                origins.append(dev)
+        return origins
+
     # === API KEYS & SECRETS ===
     # Never hardcode secrets! Always use environment variables.
     API_KEY: str = os.getenv("NITRO_API_KEY", "")

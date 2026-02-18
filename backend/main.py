@@ -107,12 +107,27 @@ app = FastAPI(
 # === MIDDLEWARE ===
 
 # CORS Configuration
+# Supports specific origins (including *.netlify.app via env var) + localhost dev
+_cors_origins = settings._build_origins()
+print(f"[CORS] Allowed origins: {_cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=_cors_origins,
+    allow_origin_regex=r"https://.*\.netlify\.app",  # wildcard all *.netlify.app subdomains
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers",
+    ],
+    expose_headers=["X-Process-Time", "X-Request-ID"],
+    max_age=3600,  # Cache preflight for 1 hour
 )
 
 # Request timing middleware
