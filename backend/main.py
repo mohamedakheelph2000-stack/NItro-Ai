@@ -3,9 +3,9 @@ main.py - Enhanced Nitro AI Backend Server
 Professional AI assistant platform with memory, history, and security
 
 AI Integration:
-- Uses hybrid AI router (ai_router.py) for intelligent model selection
-- Priority: Ollama (local, FREE, private) → Gemini (cloud fallback)
-- Ensures 24/7 availability with zero vendor lock-in
+- Uses Ollama for 100% free, private, local AI
+- No cloud APIs, no paid services, fully offline capable
+- Data never leaves your device
 """
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -318,8 +318,8 @@ async def chat(chat_message: ChatMessage, request: Request):
             status="success",
             user_id=chat_message.user_id,
             session_id=session_id,
-            ai_model=ai_model_used,  # Which model responded (phi3, gemini-pro, none)
-            ai_source=ai_source  # Where it came from (ollama_local, gemini_cloud, fallback)
+            ai_model=ai_model_used,  # Which model responded (phi3, llama3.2:1b, mistral, etc.)
+            ai_source=ai_source  # Where it came from (ollama_local, error)
         )
         
     except HTTPException:

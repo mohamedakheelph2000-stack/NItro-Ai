@@ -65,10 +65,9 @@ class Settings:
     # Never hardcode secrets! Always use environment variables.
     API_KEY: str = os.getenv("NITRO_API_KEY", "")
     
-    # AI Service API Keys (for future use)
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
+    # AI Service API Keys (optional, not used in local-only mode)
+    # OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    # ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     
     # === DATABASE SETTINGS ===
     # For future database integration
@@ -113,9 +112,8 @@ class Settings:
     DEFAULT_LANGUAGE: str = os.getenv("DEFAULT_LANGUAGE", "en")  # Default to English
     SUPPORTED_LANGUAGES: list = ["en", "es", "fr", "de", "zh", "ja", "ar", "pt", "ru", "it"]
     AUTO_DETECT_LANGUAGE: bool = True
-    TRANSLATION_SERVICE: str = os.getenv("TRANSLATION_SERVICE", "none")  # Options: 'openai', 'google', 'deepl', 'none'
-    GOOGLE_TRANSLATE_API_KEY: str = os.getenv("GOOGLE_TRANSLATE_API_KEY", "")
-    DEEPL_API_KEY: str = os.getenv("DEEPL_API_KEY", "")
+    TRANSLATION_SERVICE: str = os.getenv("TRANSLATION_SERVICE", "none")  # Options: 'none' (local-only mode)
+    # DEEPL_API_KEY: str = os.getenv("DEEPL_API_KEY", "")  # Disabled in local-only mode
     
     # === VIDEO GENERATION SETTINGS ===
     VIDEO_MODEL: str = os.getenv("VIDEO_MODEL", "none")  # Options: 'runway', 'stable-diffusion', 'sora', 'none'

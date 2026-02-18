@@ -164,11 +164,41 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "4e9a970e-5ec1-4c59-8f40-8e4cca970cdd",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:45:12.852025",
+      "last_updated": "2026-02-18T23:45:16.607662",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:45:16.607655",
+          "sender": "user",
+          "message": "Hello, test response",
+          "response": "Greetings! How can I assist you today? Please feel free to ask any questions or share your concerns."
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "07896314-9bf3-444c-be44-149c4a51d532",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:45:23.366237",
+      "last_updated": "2026-02-18T23:45:26.378080",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:45:26.378073",
+          "sender": "user",
+          "message": "Say hello in 3 words",
+          "response": "Hello there, friend. How do you like it so far? I'm glad to meet someone new! Let’thy know when we can talk more about our shared interests and experiences beyond a simple greeting. Stay curious and keep learning every day - that way the world becomes not just bigger but richer for us all."
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 11,
-    "total_sessions": 11
+    "total_messages": 13,
+    "total_sessions": 13
   }
 }

@@ -59,8 +59,8 @@ class ChatResponse(BaseModel):
     timestamp: str = Field(..., description="When the response was generated")
     status: str = Field(..., description="Status of the request (success/error)")
     user_id: Optional[str] = Field(None, description="The user who sent the message")
-    ai_model: Optional[str] = Field("unknown", description="AI model used (phi3, gemini-pro, etc.)")
-    ai_source: Optional[str] = Field("unknown", description="AI source (ollama_local, gemini_cloud, fallback)")
+    ai_model: Optional[str] = Field("unknown", description="AI model used (phi3, llama3.2:1b, mistral, etc.)")
+    ai_source: Optional[str] = Field("unknown", description="AI source (ollama_local, error)")
     
     class Config:
         # Example data shown in API documentation
