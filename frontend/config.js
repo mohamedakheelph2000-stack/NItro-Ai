@@ -5,7 +5,7 @@
 
 const CONFIG = {
     // Production Backend API URL (deployed on Render)
-    API_BASE_URL: 'https://nitro-ai-pk9l.onrender.com',
+    API_BASE_URL: 'https://nitro-ai-rjab.onrender.com',
     
     // Development Backend API URL (local development)
     DEV_API_URL: 'http://localhost:8000',

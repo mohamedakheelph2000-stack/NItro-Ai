@@ -34,7 +34,7 @@ services:
         value: INFO
       
       - key: ALLOWED_ORIGINS
-        value: "https://nitro-ai.netlify.app,https://*.netlify.app"  # Netlify frontend
+        value: "https://bucolic-toffee-66c7ca.netlify.app,https://*.netlify.app"  # Netlify frontend
 
       # Signals to ai_router that we're on cloud (skips Ollama, uses Gemini directly)
       - key: RENDER
