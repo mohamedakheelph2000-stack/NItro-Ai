@@ -6,7 +6,7 @@ Supported Models (get them with: ollama pull <model>):
 - llama3.2:1b (1.3GB) - Ultra fast, good for chat
 - phi3 (2.3GB) - Microsoft's efficient model
 - mistral (4.1GB) - Very capable, balanced
-- llama3:8b (4.7GB) - Meta's latest, excellent quality
+- llama3 (4.7GB) - Meta's latest, excellent quality (DEFAULT)
 
 Setup:
 1. Install Ollama: https://ollama.com/download
@@ -37,7 +37,7 @@ def ollama_response(prompt, timeout=45):
     """
     try:
         ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2:1b")
+        ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
         
         logger.info(f"🤖 Querying Ollama ({ollama_model})...")
         
@@ -92,7 +92,7 @@ def get_ai_response(prompt):
     Raises:
         Exception: If Ollama is not available
     """
-    ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2:1b")
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
     
     # Try Ollama
     local_response = ollama_response(prompt)

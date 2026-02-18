@@ -194,11 +194,56 @@
         }
       ],
       "message_count": 1
+    },
+    {
+      "session_id": "ee08164c-8452-4216-9c3f-365c21ef083f",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:46:12.647630",
+      "last_updated": "2026-02-18T23:46:15.024848",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:46:15.024843",
+          "sender": "user",
+          "message": "Can you respond with a short greeting?",
+          "response": "Good day! I hope this message finds you well. How are you doing today?"
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "dd1bc7b5-2476-45cf-a7ef-eac1c5f98b64",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:48:50.526391",
+      "last_updated": "2026-02-18T23:48:59.219746",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:48:59.219738",
+          "sender": "user",
+          "message": "Hello! Please respond in exactly 5 words.",
+          "response": "I'm happy to help you."
+        }
+      ],
+      "message_count": 1
+    },
+    {
+      "session_id": "252a5a72-2d5c-4b31-ba49-c8ed233d569c",
+      "user_id": "anonymous",
+      "created_at": "2026-02-18T23:49:10.352631",
+      "last_updated": "2026-02-18T23:49:13.840832",
+      "messages": [
+        {
+          "timestamp": "2026-02-18T23:49:13.840818",
+          "sender": "user",
+          "message": "Explain Ollama in one sentence.",
+          "response": "Ollama is a popular social media platform that allows users to create and share short, looping videos of any length, often used for creative expression, entertainment, and self-promotion."
+        }
+      ],
+      "message_count": 1
     }
   ],
   "metadata": {
     "created": "2026-02-17T19:58:53.784832",
-    "total_messages": 13,
-    "total_sessions": 13
+    "total_messages": 16,
+    "total_sessions": 16
   }
 }
