@@ -68,6 +68,3 @@ def gemini_response(prompt):
             continue
 
     return f"Gemini error: All models failed. Last error: {last_error}"
-
-        else:
-            return f"Gemini error: {error_msg}"
