@@ -1,14 +1,13 @@
 """
 ai_router.py - Hybrid AI Router System
-Intelligently routes AI requests with local-first strategy
+Routes AI requests based on environment:
+- Production (Render/cloud): Gemini API directly (Ollama not available on cloud)
+- Development (localhost): Ollama first, Gemini fallback
 
-Flow:
-1. Try Ollama (local, FREE, private, fast on laptop)
-2. Fallback to Gemini API (cloud, requires API key)
-3. Return error if both fail
-
-Performance optimized for low-compute laptops.
+Get free Gemini API key: https://aistudio.google.com/app/apikey
+Add GEMINI_API_KEY to Render environment variables to enable chat.
 """
+import os
 import requests
 
 # Import with compatibility for both local and package mode
@@ -18,6 +17,111 @@ try:
 except ImportError:
     from gemini_client import gemini_response
     from logger import logger
+
+
+def _is_cloud_environment():
+    """
+    Detect if running in cloud (Render, Heroku, Railway, etc.).
+    On cloud: skip Ollama entirely — it's never available there.
+    """
+    # Render sets RENDER=true automatically
+    if os.getenv("RENDER"):
+        return True
+    # Other common cloud signals
+    if os.getenv("DYNO") or os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("FLY_APP_NAME"):
+        return True
+    # If Ollama URL is explicitly set to a remote host, it's cloud
+    ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    if "localhost" not in ollama_url and "127.0.0.1" not in ollama_url:
+        return True
+    return False
+
+
+def ollama_response(prompt, timeout=30):
+    """
+    Query local Ollama AI server (phi3 model).
+    Only called in development — never in cloud deployments.
+    """
+    try:
+        logger.info("Attempting Ollama local AI (phi3)...")
+        ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+        ollama_model = os.getenv("OLLAMA_MODEL", "phi3")
+        response = requests.post(
+            f"{ollama_url}/api/generate",
+            json={
+                "model": ollama_model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "num_predict": 500,
+                    "temperature": 0.7,
+                    "top_p": 0.9,
+                    "num_ctx": 2048
+                }
+            },
+            timeout=timeout
+        )
+        if response.status_code == 200:
+            ai_text = response.json().get("response", "").strip()
+            if ai_text:
+                logger.info("Ollama responded successfully (LOCAL AI)")
+                return ai_text
+            logger.warning("Ollama returned empty response")
+            return None
+        logger.warning(f"Ollama HTTP {response.status_code}")
+        return None
+    except requests.exceptions.ConnectionError:
+        logger.warning("Ollama not running (connection refused)")
+        return None
+    except requests.exceptions.Timeout:
+        logger.warning("Ollama timeout")
+        return None
+    except Exception as e:
+        logger.error(f"Ollama error: {type(e).__name__}: {str(e)}")
+        return None
+
+
+def get_ai_response(prompt):
+    """
+    Main AI router.
+    Cloud: Gemini only (Ollama unavailable on Render).
+    Local: Ollama first, Gemini fallback.
+
+    Returns:
+        dict: {"response": str, "model": str, "source": str}
+    """
+    is_cloud = _is_cloud_environment()
+
+    # === PRODUCTION / CLOUD — use Gemini directly ===
+    if is_cloud:
+        logger.info("Cloud environment detected — using Gemini API")
+        try:
+            gemini_text = gemini_response(prompt)
+            if gemini_text and not gemini_text.startswith("Gemini error:"):
+                return {"response": gemini_text, "model": "gemini-1.5-flash", "source": "gemini_cloud"}
+            logger.error(f"Gemini error: {gemini_text}")
+            raise Exception(gemini_text)
+        except Exception as e:
+            raise Exception(str(e))
+
+    # === DEVELOPMENT — Ollama first, Gemini fallback ===
+    logger.info("Development environment — trying Ollama first...")
+    local_response = ollama_response(prompt)
+    if local_response:
+        return {"response": local_response, "model": "phi3", "source": "ollama_local"}
+
+    logger.info("Ollama unavailable — falling back to Gemini API...")
+    try:
+        gemini_text = gemini_response(prompt)
+        if gemini_text and not gemini_text.startswith("Gemini error:"):
+            return {"response": gemini_text, "model": "gemini-1.5-flash", "source": "gemini_cloud"}
+        raise Exception(f"Gemini failed: {gemini_text}")
+    except Exception as e:
+        raise Exception(
+            "Both AI services unavailable. "
+            "Start Ollama (ollama serve) or add GEMINI_API_KEY to .env"
+        )
+
 
 
 def ollama_response(prompt, timeout=30):

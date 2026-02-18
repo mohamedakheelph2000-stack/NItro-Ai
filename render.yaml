@@ -34,14 +34,18 @@ services:
         value: INFO
       
       - key: ALLOWED_ORIGINS
-        value: "*"  # Update with your domain after deployment
+        value: "https://nitro-ai.netlify.app,https://*.netlify.app"  # Netlify frontend
+
+      # Signals to ai_router that we're on cloud (skips Ollama, uses Gemini directly)
+      - key: RENDER
+        value: "true"
       
       # AI Parameters
       - key: AI_TEMPERATURE
         value: "0.7"
       
       - key: AI_MAX_TOKENS
-        value: "500"
+        value: "800"
       
       # Feature Flags
       - key: ENABLE_IMAGE_GEN

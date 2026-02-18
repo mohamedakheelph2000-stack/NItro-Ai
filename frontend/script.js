@@ -255,10 +255,26 @@ async function sendMessage() {
             updateSessionInfo();
         }
         
-        // Add AI response
+        // Detect AI provider not configured (backend returns HTTP 200 with error text)
+        const aiReply = data.response || '';
+        const isProviderError = aiReply.includes('AI services temporarily unavailable') ||
+                                aiReply.includes('GEMINI_API_KEY') ||
+                                aiReply.includes('Gemini error:') ||
+                                aiReply.includes('ollama serve');
+
         removeTypingIndicator(typingId);
-        addMessage(data.response, 'assistant');
-        state.lastFailedMessage = null;
+
+        if (isProviderError) {
+            addErrorMessage(
+                'The AI provider is not configured on the server yet. ' +
+                'To fix: add your **GEMINI_API_KEY** to the Render environment variables, then redeploy.',
+                message
+            );
+            showToast('Backend AI not configured — see instructions below.', 'error');
+        } else {
+            addMessage(aiReply, 'assistant');
+            state.lastFailedMessage = null;
+        }
         
         // Reload sessions to show updated conversation
         setTimeout(() => loadRecentSessions(), 500);
