@@ -286,14 +286,45 @@ async def chat(chat_message: ChatMessage, request: Request):
         except Exception as ai_error:
             # Ollama not available - provide helpful setup instructions
             logger.error(f"❌ Ollama unavailable: {ai_error}")
-            ai_response = (
-                "🤖 Ollama AI is not running.\n\n"
-                "Quick Setup (100% FREE):\n"
-                "1. Install: https://ollama.com/download\n"
-                "2. Pull model: ollama pull llama3.2:1b\n"
-                "3. Start server: ollama serve\n\n"
-                f"Error: {str(ai_error)}"
-            )
+            
+            # Determine specific error type for better user guidance
+            error_msg = str(ai_error).lower()
+            if "connection" in error_msg or "not running" in error_msg:
+                ai_response = (
+                    "🚨 **Ollama is not running**\n\n"
+                    "Please start Ollama to use Nitro AI:\n\n"
+                    "**Quick Fix:**\n"
+                    "1. Open a terminal/command prompt\n"
+                    "2. Run: `ollama serve`\n"
+                    "3. Refresh and try again\n\n"
+                    "**First time setup?**\n"
+                    "1. Install Ollama: https://ollama.com/download\n"
+                    "2. Pull a model: `ollama pull llama3`\n"
+                    "3. Start server: `ollama serve`\n\n"
+                    "Need help? Check the README.md file."
+                )
+            elif "timeout" in error_msg:
+                ai_response = (
+                    "⏱️ **Request Timeout**\n\n"
+                    "The AI model took too long to respond. This can happen when:\n\n"
+                    "- The model is loading for the first time\n"
+                    "- Your computer is busy with other tasks\n"
+                    "- The model is too large for your system\n\n"
+                    "**Try:**\n"
+                    "- Wait a moment and try again\n"
+                    "- Use a smaller model like `llama3.2:1b`\n"
+                    "- Close other applications to free up resources"
+                )
+            else:
+                ai_response = (
+                    "🤖 **Ollama Connection Error**\n\n"
+                    "Quick Setup (100% FREE):\n"
+                    "1. Install: https://ollama.com/download\n"
+                    "2. Pull model: `ollama pull llama3`\n"
+                    "3. Start server: `ollama serve`\n\n"
+                    f"**Technical details:** {str(ai_error)}"
+                )
+            
             ai_model_used = "none"
             ai_source = "error"
             

@@ -24,72 +24,91 @@ except ImportError:
     from logger import logger
 
 
-def ollama_response(prompt, timeout=45):
+def ollama_response(prompt, timeout=60, max_retries=2):
     """
-    Query local Ollama AI server with system prompt.
+    Query local Ollama AI server with system prompt and retry logic.
     
     Args:
         prompt: User message/question
-        timeout: Request timeout in seconds
+        timeout: Request timeout in seconds (default: 60)
+        max_retries: Number of retries on connection error (default: 2)
     
     Returns:
         str: AI response or None if failed
     """
-    try:
-        ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
-        
-        # System prompt for Nitro AI
-        system_prompt = (
-            "You are Nitro AI, a personal AI assistant created by Mohamed Akheel. "
-            "You run locally using Ollama. "
-            "You help with coding, AI, productivity and general questions. "
-            "Never invent company information about Nitro AI."
-        )
-        
-        logger.info(f"🤖 Querying Ollama ({ollama_model})...")
-        
-        response = requests.post(
-            f"{ollama_url}/api/chat",
-            json={
-                "model": ollama_model,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt}
-                ],
-                "stream": False,
-                "options": {
-                    "num_predict": 800,  # Max response length
-                    "temperature": 0.7,   # Creativity vs accuracy
-                    "top_p": 0.9,
-                    "num_ctx": 2048      # Context window
-                }
-            },
-            timeout=timeout
-        )
-        
-        if response.status_code == 200:
-            response_data = response.json()
-            # Extract AI response from chat API format
-            ai_text = response_data.get("message", {}).get("content", "").strip()
-            if ai_text:
-                logger.info(f"✅ Ollama ({ollama_model}) responded successfully")
-                return ai_text
-            logger.warning("⚠️ Ollama returned empty response")
+    ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
+    
+    # System prompt for Nitro AI
+    system_prompt = (
+        "You are Nitro AI, a personal AI assistant created by Mohamed Akheel. "
+        "You run locally using Ollama. "
+        "You help with coding, AI, productivity and general questions. "
+        "Never invent company information about Nitro AI."
+    )
+    
+    # Retry loop for robustness
+    for attempt in range(max_retries + 1):
+        try:
+            if attempt > 0:
+                logger.info(f"🔄 Retry attempt {attempt}/{max_retries}...")
+            else:
+                logger.info(f"🤖 Querying Ollama ({ollama_model})...")
+            
+            response = requests.post(
+                f"{ollama_url}/api/chat",
+                json={
+                    "model": ollama_model,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "stream": False,
+                    "options": {
+                        "num_predict": 800,  # Max response length
+                        "temperature": 0.7,   # Creativity vs accuracy
+                        "top_p": 0.9,
+                        "num_ctx": 2048      # Context window
+                    }
+                },
+                timeout=timeout
+            )
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                # Extract AI response from chat API format
+                ai_text = response_data.get("message", {}).get("content", "").strip()
+                if ai_text:
+                    logger.info(f"✅ Ollama ({ollama_model}) responded successfully")
+                    return ai_text
+                logger.warning("⚠️ Ollama returned empty response")
+                # Don't retry on empty response, return None
+                return None
+            
+            logger.warning(f"⚠️ Ollama HTTP {response.status_code}")
+            # Don't retry on HTTP errors, return None
             return None
-        
-        logger.warning(f"⚠️ Ollama HTTP {response.status_code}")
-        return None
-        
-    except requests.exceptions.ConnectionError:
-        logger.warning("❌ Ollama not running - start with: ollama serve")
-        return None
-    except requests.exceptions.Timeout:
-        logger.warning("⏱️ Ollama timeout - model may be loading")
-        return None
-    except Exception as e:
-        logger.error(f"❌ Ollama error: {type(e).__name__}: {str(e)}")
-        return None
+            
+        except requests.exceptions.ConnectionError as e:
+            if attempt < max_retries:
+                logger.warning(f"⚠️ Connection failed, retrying... ({attempt + 1}/{max_retries})")
+                continue
+            logger.error("❌ Ollama not running. Please start it with: ollama serve")
+            return None
+            
+        except requests.exceptions.Timeout as e:
+            if attempt < max_retries:
+                logger.warning(f"⏱️ Request timeout, retrying... ({attempt + 1}/{max_retries})")
+                continue
+            logger.error(f"❌ Ollama timeout after {timeout}s. Model may be loading or too slow.")
+            return None
+            
+        except Exception as e:
+            logger.error(f"❌ Ollama error: {type(e).__name__}: {str(e)}")
+            return None
+    
+    # Should never reach here, but return None as fallback
+    return None
 
 
 def get_ai_response(prompt):

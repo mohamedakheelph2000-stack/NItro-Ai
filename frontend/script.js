@@ -172,24 +172,40 @@ async function sendMessage() {
     const typingId = showTypingIndicator();
     
     try {
-        // Call API
+        // Call API with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+        
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ message: message }),
+            signal: controller.signal
         });
         
+        clearTimeout(timeoutId);
+        
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
         const aiResponse = data.response || 'Sorry, I could not generate a response.';
         
-        // Update model badge
-        if (data.model) {
-            state.model = data.model;
-            document.getElementById('modelBadge').textContent = data.model;
+        // Update model badge (including error state)
+        if (data.ai_model) {
+            state.model = data.ai_model;
+            const badge = document.getElementById('modelBadge');
+            badge.textContent = data.ai_model;
+            // Visual indicator for error state
+            if (data.ai_source === 'error') {
+                badge.style.backgroundColor = '#ff4444';
+                badge.title = 'Ollama connection error';
+            } else {
+                badge.style.backgroundColor = '';
+                badge.title = '';
+            }
         }
         
         // Remove typing indicator
@@ -198,19 +214,29 @@ async function sendMessage() {
         // Add assistant message
         appendMessage('assistant', aiResponse);
         
-        // Save chat
-        saveChat(message, aiResponse);
+        // Save chat (only if not an error response)
+        if (data.ai_source !== 'error') {
+            saveChat(message, aiResponse);
+        }
         
     } catch (error) {
         console.error('Error:', error);
         removeTypingIndicator(typingId);
         
-        const errorMsg = error.message.includes('Failed to fetch')
-            ? '❌ Cannot connect to backend. Make sure the server is running at ' + API_BASE_URL
-            : '❌ Error: ' + error.message;
+        // Provide specific error messages
+        let errorMsg;
+        if (error.name === 'AbortError') {
+            errorMsg = '⏱️ **Request Timeout**\n\nThe request took too long. The AI model might be loading or your system is busy.\n\nPlease try again in a moment.';
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMsg = '🚨 **Backend Not Connected**\n\nCannot reach the backend server at ' + API_BASE_URL + '\n\n**Quick Fix:**\n1. Make sure the backend is running\n2. Check if Ollama is started: `ollama serve`\n3. Refresh the page and try again';
+        } else if (error.message.includes('Message cannot be empty')) {
+            errorMsg = '⚠️ Please enter a message before sending.';
+        } else {
+            errorMsg = '❌ **Error**\n\n' + error.message + '\n\nPlease try again or check the console for details.';
+        }
         
         appendMessage('assistant', errorMsg);
-        showToast('Failed to send message. Check console for details.', 'error');
+        showToast('Message failed to send', 'error');
     } finally {
         state.isLoading = false;
         document.getElementById('sendBtn').disabled = false;

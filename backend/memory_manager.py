@@ -67,12 +67,41 @@ class MemoryManager:
             return self._get_empty_data()
     
     def _save_data(self, data: Dict):
-        """Save conversation data to JSON file."""
+        """Save conversation data to JSON file with error recovery."""
         try:
-            with open(self.conversations_file, 'w', encoding='utf-8') as f:
+            # Ensure directory exists
+            self.memory_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Create backup before saving
+            if self.conversations_file.exists():
+                backup_file = self.memory_dir / "conversations.backup.json"
+                try:
+                    import shutil
+                    shutil.copy2(self.conversations_file, backup_file)
+                except Exception as backup_error:
+                    logger.warning(f"Could not create backup: {backup_error}")
+            
+            # Save with atomic write (write to temp, then rename)
+            temp_file = self.memory_dir / "conversations.temp.json"
+            with open(temp_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            # Atomic rename
+            temp_file.replace(self.conversations_file)
+            
+            logger.debug("Conversation data saved successfully")
+            
         except Exception as e:
             logger.error(f"Error saving conversation data: {e}")
+            # Try to restore from backup if save failed
+            backup_file = self.memory_dir / "conversations.backup.json"
+            if backup_file.exists():
+                try:
+                    import shutil
+                    shutil.copy2(backup_file, self.conversations_file)
+                    logger.info("Restored from backup after save failure")
+                except Exception as restore_error:
+                    logger.error(f"Could not restore from backup: {restore_error}")
             raise
     
     def _get_empty_data(self) -> Dict:
