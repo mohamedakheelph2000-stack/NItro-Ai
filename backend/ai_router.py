@@ -26,7 +26,7 @@ except ImportError:
 
 def ollama_response(prompt, timeout=45):
     """
-    Query local Ollama AI server.
+    Query local Ollama AI server with system prompt.
     
     Args:
         prompt: User message/question
@@ -39,13 +39,24 @@ def ollama_response(prompt, timeout=45):
         ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
         
+        # System prompt for Nitro AI
+        system_prompt = (
+            "You are Nitro AI, a personal AI assistant created by Mohamed Akheel. "
+            "You run locally using Ollama. "
+            "You help with coding, AI, productivity and general questions. "
+            "Never invent company information about Nitro AI."
+        )
+        
         logger.info(f"🤖 Querying Ollama ({ollama_model})...")
         
         response = requests.post(
-            f"{ollama_url}/api/generate",
+            f"{ollama_url}/api/chat",
             json={
                 "model": ollama_model,
-                "prompt": prompt,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
                 "stream": False,
                 "options": {
                     "num_predict": 800,  # Max response length
@@ -58,7 +69,9 @@ def ollama_response(prompt, timeout=45):
         )
         
         if response.status_code == 200:
-            ai_text = response.json().get("response", "").strip()
+            response_data = response.json()
+            # Extract AI response from chat API format
+            ai_text = response_data.get("message", {}).get("content", "").strip()
             if ai_text:
                 logger.info(f"✅ Ollama ({ollama_model}) responded successfully")
                 return ai_text
