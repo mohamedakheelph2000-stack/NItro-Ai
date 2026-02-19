@@ -4,24 +4,58 @@
 // This file configures the backend API endpoint based on environment
 
 const CONFIG = {
-    // Local Backend API URL (runs on your laptop)
-    API_BASE_URL: 'http://localhost:8000',
+    // ===== CONFIGURATION VARIABLES =====
+    // Edit these for your deployment
     
-    // Network-accessible URL (for mobile/tablet access)
-    // Change this to your laptop's IP if using Cloudflare tunnel
-    NETWORK_API_URL: 'http://localhost:8000',
+    // Local Backend API URL (for development)
+    LOCAL_API_URL: 'http://localhost:8000',
+    
+    // Cloudflare Tunnel URL (for public access)
+    // Set this to your Cloudflare Tunnel domain (e.g., https://nitro-ai.yourdomain.com)
+    // Leave empty to disable public access
+    CLOUDFLARE_TUNNEL_URL: '',
+    
+    // API Key (optional, for secured public access)
+    // If backend has ENABLE_API_KEY=True, set your API key here
+    // SECURITY: In production, move this to a secure config or user login
+    API_KEY: '',
     
     // Auto-detect environment and return appropriate API URL
     getApiUrl: function() {
-        // Always use local backend for laptop server mode
-        const apiUrl = this.API_BASE_URL;
+        // Check if we're accessing from Cloudflare Tunnel domain
+        const currentHost = window.location.hostname;
         
+        // If Cloudflare Tunnel is configured and we're not on localhost
+        if (this.CLOUDFLARE_TUNNEL_URL && !currentHost.includes('localhost') && !currentHost.includes('127.0.0.1')) {
+            console.log(`%c🌐 Environment: CLOUDFLARE TUNNEL (Public)`, 'color: #00d4ff; font-weight: bold');
+            console.log(`%c🔗 API URL: ${this.CLOUDFLARE_TUNNEL_URL}`, 'color: #00ff88; font-weight: bold');
+            console.log(`%c📍 Frontend: ${window.location.origin}`, 'color: #ffaa00; font-weight: bold');
+            console.log(`%c🔒 API Key: ${this.API_KEY ? '✓ Set' : '✗ Not Set'}`, 'color: #9d4edd; font-weight: bold');
+            return this.CLOUDFLARE_TUNNEL_URL;
+        }
+        
+        // Default to local API
         console.log(`%c🌐 Environment: LOCAL LAPTOP SERVER`, 'color: #00d4ff; font-weight: bold');
-        console.log(`%c🔗 API URL: ${apiUrl}`, 'color: #00ff88; font-weight: bold');
+        console.log(`%c🔗 API URL: ${this.LOCAL_API_URL}`, 'color: #00ff88; font-weight: bold');
         console.log(`%c📍 Frontend: ${window.location.origin}`, 'color: #ffaa00; font-weight: bold');
         console.log(`%c💻 Backend: Ollama on your laptop`, 'color: #9d4edd; font-weight: bold');
         
-        return apiUrl;
+        return this.LOCAL_API_URL;
+    },
+    
+    // Get fetch headers (includes API key if configured)
+    getFetchHeaders: function(additionalHeaders = {}) {
+        const headers = {
+            'Content-Type': 'application/json',
+            ...additionalHeaders
+        };
+        
+        // Add API key if configured
+        if (this.API_KEY) {
+            headers['X-API-Key'] = this.API_KEY;
+        }
+        
+        return headers;
     },
     
     // Log API calls for debugging

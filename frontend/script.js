@@ -178,7 +178,7 @@ async function sendMessage() {
         
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: CONFIG.getFetchHeaders(),
             body: JSON.stringify({ message: message }),
             signal: controller.signal
         });

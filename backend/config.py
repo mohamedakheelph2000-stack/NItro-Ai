@@ -17,9 +17,21 @@ class Settings:
     
     # === SERVER SETTINGS ===
     APP_NAME: str = "Nitro AI Backend"
-    VERSION: str = "5.0.0"  # Production v5.0 with automation agents
+    VERSION: str = "6.0.0"  # Production v6.0 - Public access ready
     HOST: str = "0.0.0.0"  # Listen on all network interfaces
     PORT: int = int(os.getenv("PORT", "8000"))  # Dynamic port for cloud platforms
+    
+    # === PRODUCTION SECURITY SETTINGS ===
+    # Cloudflare Tunnel domain (set this when using Cloudflare Tunnel)
+    CLOUDFLARE_TUNNEL_DOMAIN: str = os.getenv("CLOUDFLARE_TUNNEL_DOMAIN", "")
+    
+    # Enable API key authentication for public access
+    ENABLE_API_KEY: bool = os.getenv("ENABLE_API_KEY", "False").lower() == "true"
+    API_KEY: str = os.getenv("API_KEY", "")
+    
+    # Enable rate limiting
+    ENABLE_RATE_LIMIT: bool = os.getenv("ENABLE_RATE_LIMIT", "False").lower() == "true"
+    RATE_LIMIT_PER_MINUTE: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
     
     # === CORS SETTINGS ===
     # Allowed origins for local development only
@@ -35,7 +47,10 @@ class Settings:
 
     @classmethod
     def _build_origins(cls) -> list:
-        """Parse ALLOWED_ORIGINS - localhost only for local deployment."""
+        """
+        Parse ALLOWED_ORIGINS from environment variable.
+        Supports both localhost and custom domains for production.
+        """
         raw = os.getenv(
             "ALLOWED_ORIGINS",
             (
@@ -48,21 +63,29 @@ class Settings:
             ),
         )
         origins = [o.strip() for o in raw.split(",") if o.strip()]
+        
+        # Add Cloudflare Tunnel domain if configured
+        if cls.CLOUDFLARE_TUNNEL_DOMAIN:
+            tunnel_url = cls.CLOUDFLARE_TUNNEL_DOMAIN.strip()
+            if tunnel_url and tunnel_url not in origins:
+                origins.append(tunnel_url)
+                print(f"[CORS] Added Cloudflare Tunnel domain: {tunnel_url}")
+        
         # Always allow localhost for local development
         dev_origins = [
             "http://localhost:5173",
             "http://localhost:3000",
             "http://localhost:8080",
             "http://127.0.0.1:5173",
+            "http://127.0.0.1:3000",
         ]
         for dev in dev_origins:
             if dev not in origins:
                 origins.append(dev)
         return origins
 
-    # === API KEYS & SECRETS ===
-    # Never hardcode secrets! Always use environment variables.
-    API_KEY: str = os.getenv("NITRO_API_KEY", "")
+    # === API KEYS & SECRETS (Legacy) ===
+    # Note: API_KEY moved to PRODUCTION SECURITY SETTINGS above
     
     # AI Service API Keys (optional, not used in local-only mode)
     # OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")

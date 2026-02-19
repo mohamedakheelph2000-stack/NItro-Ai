@@ -6,8 +6,15 @@ AI Integration:
 - Uses Ollama for 100% free, private, local AI
 - No cloud APIs, no paid services, fully offline capable
 - Data never leaves your device
+
+Security Features:
+- Optional API key authentication
+- Rate limiting
+- Security headers
+- CORS protection
+- Cloudflare Tunnel support
 """
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -38,6 +45,7 @@ try:
     from .memory_manager import memory_manager
     from .language_detector import LanguageDetector
     from .automation_agents import agent_manager
+    from .security import SecurityHeadersMiddleware, RateLimitMiddleware, verify_api_key
 except ImportError:
     # Fallback to absolute imports (for local dev: cd backend && python -m uvicorn main:app)
     from ai_router import get_ai_response
@@ -53,6 +61,7 @@ except ImportError:
     from memory_manager import memory_manager
     from language_detector import LanguageDetector
     from automation_agents import agent_manager
+    from security import SecurityHeadersMiddleware, RateLimitMiddleware, verify_api_key
 
 # These always work from parent directory (models/ is a sibling to backend/)
 from models.ai_modules.video_gen import VideoGenerator
@@ -106,10 +115,29 @@ app = FastAPI(
 
 # === MIDDLEWARE ===
 
+# Security Headers Middleware (always enabled for production hardening)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Rate Limiting Middleware (optional, controlled by environment variable)
+if settings.ENABLE_RATE_LIMIT:
+    print(f"[SECURITY] Rate limiting enabled: {settings.RATE_LIMIT_PER_MINUTE} requests/minute")
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=settings.RATE_LIMIT_PER_MINUTE)
+else:
+    print(f"[SECURITY] Rate limiting disabled (dev mode)")
+
 # CORS Configuration
-# Localhost-only for local deployment
+# Supports both localhost and custom domains for production
 _cors_origins = settings._build_origins()
 print(f"[CORS] Allowed origins: {_cors_origins}")
+
+# Display security status
+if settings.ENABLE_API_KEY:
+    print(f"[SECURITY] API key authentication: ENABLED ✓")
+else:
+    print(f"[SECURITY] API key authentication: DISABLED (dev mode)")
+
+if settings.CLOUDFLARE_TUNNEL_DOMAIN:
+    print(f"[CLOUDFLARE] Tunnel domain configured: {settings.CLOUDFLARE_TUNNEL_DOMAIN}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -124,8 +152,9 @@ app.add_middleware(
         "X-Requested-With",
         "Access-Control-Request-Method",
         "Access-Control-Request-Headers",
+        "X-API-Key",  # Added for API key support
     ],
-    expose_headers=["X-Process-Time", "X-Request-ID"],
+    expose_headers=["X-Process-Time", "X-Request-ID", "X-RateLimit-Limit", "X-RateLimit-Remaining"],
     max_age=3600,  # Cache preflight for 1 hour
 )
 
@@ -215,7 +244,7 @@ async def health_check():
     )
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(chat_message: ChatMessage, request: Request):
+async def chat(chat_message: ChatMessage, request: Request, api_key_valid: bool = Depends(verify_api_key)):
     """
     Main chat endpoint - Receives messages and returns AI responses.
     
@@ -224,6 +253,7 @@ async def chat(chat_message: ChatMessage, request: Request):
     - Conversation memory storage
     - Better error handling
     - Request sanitization
+    - Optional API key protection for public access
     """
     try:
         # Log incoming message
