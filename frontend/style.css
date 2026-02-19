@@ -212,6 +212,47 @@ body {
     flex: 1;
 }
 
+.install-btn {
+    background: var(--primary);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    animation: slideIn 0.3s ease-out;
+}
+
+.install-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 163, 127, 0.3);
+}
+
+.install-btn:active {
+    transform: translateY(0);
+}
+
+.install-btn svg {
+    flex-shrink: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* ============================================================================
    CHAT CONTAINER
    ============================================================================ */
@@ -533,6 +574,18 @@ body {
     
     .message {
         gap: 12px;
+    }
+    
+    .install-btn .install-text {
+        display: none;
+    }
+    
+    .install-btn {
+        padding: 8px 12px;
+    }
+    
+    .header {
+        padding: 0 12px;
     }
 }
 

@@ -377,10 +377,65 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Could show a custom install button here
+    
+    // Show install button
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.style.display = 'flex';
+        console.log('💡 PWA install prompt available');
+    }
 });
 
 window.addEventListener('appinstalled', () => {
-    console.log('✅ PWA installed');
+    console.log('✅ PWA installed successfully');
     deferredPrompt = null;
+    
+    // Hide install button
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
+    
+    showToast('Nitro AI installed successfully! 🎉', 'success');
 });
+
+async function installPWA() {
+    if (!deferredPrompt) {
+        console.log('⚠️ Install prompt not available');
+        showToast('App already installed or not available for installation', 'info');
+        return;
+    }
+    
+    // Show the install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user's response
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+        console.log('✅ User accepted install');
+    } else {
+        console.log('❌ User declined install');
+    }
+    
+    // Clear the deferred prompt
+    deferredPrompt = null;
+    
+    // Hide install button
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
+}
+
+// Check if already running as PWA
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    console.log('✅ Running as installed PWA');
+    // Hide install button if running as PWA
+    window.addEventListener('DOMContentLoaded', () => {
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) {
+            installBtn.style.display = 'none';
+        }
+    });
+}
